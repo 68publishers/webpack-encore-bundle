@@ -35,6 +35,9 @@ encore:
         # {encore_js 'entry1', null, 'frontend'}
         frontend: %wwwDir%/public/frontend/build
     
+    # if using Encore.enableIntegrityHashes() and need the crossorigin attribute (default: NULL, or use 'anonymous' or 'use-credentials')
+    crossorigin: 'anonymous'
+    
     # if you want to cache entrypoints.json
     cache:
         enabled: yes # default is 'no'

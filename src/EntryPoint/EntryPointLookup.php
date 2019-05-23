@@ -7,7 +7,7 @@ namespace SixtyEightPublishers\WebpackEncoreBundle\EntryPoint;
 use Nette;
 use SixtyEightPublishers;
 
-final class EntryPointLookup implements IEntryPointLookup
+final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvider
 {
 	use Nette\SmartObject;
 
@@ -159,5 +159,17 @@ final class EntryPointLookup implements IEntryPointLookup
 	public function reset(): void
 	{
 		$this->returnedFiles = [];
+	}
+
+	/*********************** interface \SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IIntegrityDataProvider ***********************/
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getIntegrityData(): array
+	{
+		$integrity = $this->getEntriesData()['integrity'] ?? [];
+
+		return is_array($integrity) ? $integrity : [];
 	}
 }

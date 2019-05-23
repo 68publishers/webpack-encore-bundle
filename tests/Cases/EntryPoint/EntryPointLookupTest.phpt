@@ -32,6 +32,10 @@ final class EntryPointLookupTest extends Tester\TestCase
       ],
       "css": []
     }
+  },
+  "integrity": {
+    "file1.js": "sha384-Q86c+opr0lBUPWN28BLJFqmLhho+9ZcJpXHorQvX6mYDWJ24RQcdDarXFQYN8HLc",
+    "styles.css": "sha384-ymG7OyjISWrOpH9jsGvajKMDEOP/mKJq8bHC0XdjQA6P8sg2nu+2RLQxcNNwE/3J"
   }
 }
 JSON;
@@ -89,6 +93,29 @@ JSON;
 	public function testEmptyReturnOnValidEntryNoJsOrCssFile(): void
 	{
 		Tester\Assert::equal([], $this->entryPointLookup->getCssFiles('other_entry'));
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testGetIntegrityData(): void
+	{
+		Tester\Assert::equal([
+			'file1.js' => 'sha384-Q86c+opr0lBUPWN28BLJFqmLhho+9ZcJpXHorQvX6mYDWJ24RQcdDarXFQYN8HLc',
+			'styles.css' => 'sha384-ymG7OyjISWrOpH9jsGvajKMDEOP/mKJq8bHC0XdjQA6P8sg2nu+2RLQxcNNwE/3J',
+		], $this->entryPointLookup->getIntegrityData());
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testMissingIntegrityData(): void
+	{
+		$this->entryPointLookup = $this->createEntryPointLookup(
+			$this->createJsonFile('{ "entrypoints": { "other_entry": { "js": { } } } }')
+		);
+
+		Tester\Assert::equal([], $this->entryPointLookup->getIntegrityData());
 	}
 
 	/**

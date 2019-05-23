@@ -37,21 +37,26 @@ final class WebpackEncoreMacrosIntegrationTest extends Tester\TestCase
 	 */
 	public function testMacroIntegration(): void
 	{
-		$output = $this->latte->renderToString(__DIR__ . '/../../files/templates/first.latte');
+		$dom = Tester\DomQuery::fromHtml($this->latte->renderToString(__DIR__ . '/../../files/templates/first.latte'));
 
-		Tester\Assert::contains('<script src="/build/file1.js"></script>', $output);
-		Tester\Assert::contains('<script src="/build/file2.js"></script>', $output);
-		Tester\Assert::contains('<link rel="stylesheet" href="/build/styles.css">', $output);
-		Tester\Assert::contains('<link rel="stylesheet" href="/build/styles2.css">', $output);
-		Tester\Assert::contains('<script src="/build/other3.js"></script>', $output);
+		# default, my_entry
+		Tester\Assert::true($dom->has('script[src="/build/file1.js"][integrity="sha384-Q86c+opr0lBUPWN28BLJFqmLhho+9ZcJpXHorQvX6mYDWJ24RQcdDarXFQYN8HLc"]'));
+		Tester\Assert::true($dom->has('script[src="/build/file2.js"][integrity="sha384-ymG7OyjISWrOpH9jsGvajKMDEOP/mKJq8bHC0XdjQA6P8sg2nu+2RLQxcNNwE/3J"]'));
+		Tester\Assert::true($dom->has('link[rel="stylesheet"][href="/build/styles.css"][integrity="sha384-4g+Zv0iELStVvA4/B27g4TQHUMwZttA5TEojjUyB8Gl5p7sarU4y+VTSGMrNab8n"]'));
+		Tester\Assert::true($dom->has('link[rel="stylesheet"][href="/build/styles2.css"][integrity="sha384-hfZmq9+2oI5Cst4/F4YyS2tJAAYdGz7vqSMP8cJoa8bVOr2kxNRLxSw6P8UZjwUn"]'));
 
-		Tester\Assert::contains('<link rel="stylesheet" href="/build/styles3.css">', $output);
-		Tester\Assert::contains('<link rel="stylesheet" href="/build/styles4.css">', $output);
+		# different_build, third_entry
+		Tester\Assert::true($dom->has('script[src="/build/other3.js"]'));
+		Tester\Assert::true($dom->has('link[rel="stylesheet"][href="/build/styles3.css"]'));
+		Tester\Assert::true($dom->has('link[rel="stylesheet"][href="/build/styles4.css"]'));
 
-		$output = $this->latte->renderToString(__DIR__ . '/../../files/templates/second.latte');
+		$dom = Tester\DomQuery::fromHtml($this->latte->renderToString(__DIR__ . '/../../files/templates/second.latte'));
 
-		Tester\Assert::contains('<script src="/build/file3.js"></script>', $output);
-		Tester\Assert::contains('<script src="/build/other4.js"></script>', $output);
+		# default, other_entry
+		Tester\Assert::true($dom->has('script[src="/build/file3.js"]'));
+
+		# different_build, next_entry
+		Tester\Assert::true($dom->has('script[src="/build/other4.js"]'));
 	}
 
 	/**
@@ -60,12 +65,13 @@ final class WebpackEncoreMacrosIntegrationTest extends Tester\TestCase
 	public function testEntriesAreNotDuplicatedWhenAlreadyRenderedIntegration(): void
 	{
 		$this->latte->renderToString(__DIR__ . '/../../files/templates/first.latte');
-		$output = $this->latte->renderToString(__DIR__ . '/../../files/templates/second.latte');
+		$dom = Tester\DomQuery::fromHtml($this->latte->renderToString(__DIR__ . '/../../files/templates/second.latte'));
 
-		Tester\Assert::contains('<script src="/build/file3.js"></script>', $output);
-		Tester\Assert::notContains('<script src="/build/file1.js"></script>', $output);
-		Tester\Assert::notContains('<link rel="stylesheet" href="/build/styles3.css">', $output);
-		Tester\Assert::notContains('<link rel="stylesheet" href="/build/styles4.css">', $output);
+		Tester\Assert::true($dom->has('script[src="/build/file3.js"]'));
+		Tester\Assert::true($dom->has('script[src="/build/other4.js"]'));
+		Tester\Assert::false($dom->has('script[src="/build/file1.js"]'));
+		Tester\Assert::false($dom->has('link[rel="stylesheet"][src="/build/styles3.css"]'));
+		Tester\Assert::false($dom->has('link[rel="stylesheet"][src="/build/styles4.css"]'));
 	}
 }
 

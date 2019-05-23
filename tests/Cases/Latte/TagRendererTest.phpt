@@ -49,27 +49,6 @@ final class TagRendererTest extends Tester\TestCase
 	/**
 	 * @return void
 	 */
-	public function testRenderScriptTagsWithBadFilename(): void
-	{
-		$entryPointLookup = Mockery::mock(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookup::class);
-		$entryPointLookupProvider = Mockery::mock(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider::class);
-		$packages = Mockery::mock(Symfony\Component\Asset\Packages::class);
-
-		$entryPointLookup->shouldReceive('getJsFiles')->with('my_entry')->once()->andReturn([ '/build/file<"bad_chars.js' ]);
-
-		$entryPointLookupProvider->shouldReceive('getEntryPointLookup')->with(NULL)->once()->andReturn($entryPointLookup);
-
-		$packages->shouldReceive('getUrl')->with('/build/file<"bad_chars.js', 'custom_package')->once()->andReturn('http://localhost:8080/build/file<"bad_chars.js');
-
-		$renderer = new SixtyEightPublishers\WebpackEncoreBundle\Latte\TagRenderer($entryPointLookupProvider, $packages);
-		$tags = $renderer->renderJsTags('my_entry', 'custom_package');
-
-		Tester\Assert::contains('<script src="http://localhost:8080/build/file&lt;&quot;bad_chars.js"></script>', $tags);
-	}
-
-	/**
-	 * @return void
-	 */
 	public function testRenderScriptTagsWithinAnEntryPointCollection(): void
 	{
 		$firstEntryPointLookup = Mockery::mock(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookup::class);
@@ -92,22 +71,61 @@ final class TagRendererTest extends Tester\TestCase
 		$packages->shouldReceive('getUrl')->with('/build/file3.js', 'specific_package')->once()->andReturn('http://localhost:8080/build/file3.js');
 
 
-		$renderer = new SixtyEightPublishers\WebpackEncoreBundle\Latte\TagRenderer($entryPointLookupProvider, $packages);
+		$renderer = new SixtyEightPublishers\WebpackEncoreBundle\Latte\TagRenderer($entryPointLookupProvider, $packages, [ 'crossorigin' => 'anonymous' ]);
 
 
 		Tester\Assert::contains(
-			'<script src="http://localhost:8080/build/file1.js"></script>',
+			'<script crossorigin="anonymous" src="http://localhost:8080/build/file1.js"></script>',
 			$renderer->renderJsTags('my_entry', 'custom_package')
 		);
 
 		Tester\Assert::contains(
-			'<script src="http://localhost:8080/build/file2.js"></script>',
+			'<script crossorigin="anonymous" src="http://localhost:8080/build/file2.js"></script>',
 			$renderer->renderJsTags('my_entry', NULL, 'second')
 		);
 
 		Tester\Assert::contains(
-			'<script src="http://localhost:8080/build/file3.js"></script>',
+			'<script crossorigin="anonymous" src="http://localhost:8080/build/file3.js"></script>',
 			$renderer->renderJsTags('my_entry', 'specific_package', 'third')
+		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRenderScriptTagsWithHashes(): void
+	{
+		$entryPointLookup = Mockery::mock(
+			SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookup::class,
+			SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IIntegrityDataProvider::class
+		);
+		$entryPointLookupProvider = Mockery::mock(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider::class);
+		$packages = Mockery::mock(Symfony\Component\Asset\Packages::class);
+
+		$entryPointLookup->shouldReceive('getJsFiles')->once()->andReturn([
+			'/build/file1.js', '/build/file2.js',
+		]);
+
+		$entryPointLookup->shouldReceive('getIntegrityData')->once()->andReturn([
+			'/build/file1.js' => 'sha384-Q86c+opr0lBUPWN28BLJFqmLhho+9ZcJpXHorQvX6mYDWJ24RQcdDarXFQYN8HLc',
+			'/build/file2.js' => 'sha384-ymG7OyjISWrOpH9jsGvajKMDEOP/mKJq8bHC0XdjQA6P8sg2nu+2RLQxcNNwE/3J',
+		]);
+
+		$entryPointLookupProvider->shouldReceive('getEntryPointLookup')->with(NULL)->once()->andReturn($entryPointLookup);
+		$packages->shouldReceive('getUrl')->with('/build/file1.js', 'custom_package')->once()->andReturn('http://localhost:8080/build/file1.js');
+		$packages->shouldReceive('getUrl')->with('/build/file2.js', 'custom_package')->once()->andReturn('http://localhost:8080/build/file2.js');
+
+		$renderer = new SixtyEightPublishers\WebpackEncoreBundle\Latte\TagRenderer($entryPointLookupProvider, $packages, [ 'crossorigin' => 'anonymous' ]);
+		$output = $renderer->renderJsTags('my_entry', 'custom_package');
+
+		Tester\Assert::contains(
+			'<script crossorigin="anonymous" src="http://localhost:8080/build/file1.js" integrity="sha384-Q86c+opr0lBUPWN28BLJFqmLhho+9ZcJpXHorQvX6mYDWJ24RQcdDarXFQYN8HLc"></script>',
+			$output
+		);
+
+		Tester\Assert::contains(
+			'<script crossorigin="anonymous" src="http://localhost:8080/build/file2.js" integrity="sha384-ymG7OyjISWrOpH9jsGvajKMDEOP/mKJq8bHC0XdjQA6P8sg2nu+2RLQxcNNwE/3J"></script>',
+			$output
 		);
 	}
 }

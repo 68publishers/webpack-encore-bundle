@@ -18,14 +18,22 @@ final class TagRenderer
 	/** @var \Symfony\Component\Asset\Packages  */
 	private $packages;
 
+	/** @var array  */
+	private $defaultAttributes;
+
 	/**
 	 * @param \SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider $entryPointLookupProvider
 	 * @param \Symfony\Component\Asset\Packages                                              $packages
+	 * @param array                                                                          $defaultAttributes
 	 */
-	public function __construct(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider $entryPointLookupProvider, Symfony\Component\Asset\Packages $packages)
-	{
+	public function __construct(
+		SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider $entryPointLookupProvider,
+		Symfony\Component\Asset\Packages $packages,
+		array $defaultAttributes = []
+	) {
 		$this->entryPointLookupProvider = $entryPointLookupProvider;
 		$this->packages = $packages;
+		$this->defaultAttributes = $defaultAttributes;
 	}
 
 	/**
@@ -37,15 +45,17 @@ final class TagRenderer
 	 */
 	public function renderJsTags(string $entryName, ?string $packageName = NULL, ?string $buildName = NULL): string
 	{
-		$tags = $this->entryPointLookupProvider
-			->getEntryPointLookup($buildName)
-			->getJsFiles($entryName);
+		$entryPointLookup = $this->entryPointLookupProvider->getEntryPointLookup($buildName);
+		$integrityHashes = ($entryPointLookup instanceof SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IIntegrityDataProvider) ? $entryPointLookup->getIntegrityData() : [];
+		$htmlTag = Nette\Utils\Html::el('script')->addAttributes($this->defaultAttributes);
 
-		foreach ($tags as $i => $file) {
-			$tags[$i] = sprintf(
-				'<script src="%s"></script>',
-				htmlentities($this->packages->getUrl($file, $packageName))
-			);
+		foreach (($tags = $entryPointLookup->getJsFiles($entryName)) as $i => $file) {
+			$tags[$i] = (clone $htmlTag)
+				->addAttributes([
+					'src' => $this->packages->getUrl($file, $packageName),
+					'integrity' => $integrityHashes[$file] ?? NULL,
+				])
+				->render();
 		}
 
 		return implode("\n", $tags);
@@ -60,15 +70,20 @@ final class TagRenderer
 	 */
 	public function renderCssTags(string $entryName, ?string $packageName = NULL, ?string $buildName = NULL): string
 	{
-		$tags = $this->entryPointLookupProvider
-			->getEntryPointLookup($buildName)
-			->getCssFiles($entryName);
+		$entryPointLookup = $this->entryPointLookupProvider->getEntryPointLookup($buildName);
+		$integrityHashes = ($entryPointLookup instanceof SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IIntegrityDataProvider) ? $entryPointLookup->getIntegrityData() : [];
 
-		foreach ($tags as $i => $file) {
-			$tags[$i] = sprintf(
-				'<link rel="stylesheet" href="%s">',
-				htmlentities($this->packages->getUrl($file, $packageName))
-			);
+		$htmlTag = Nette\Utils\Html::el('link')
+			->addAttributes($this->defaultAttributes)
+			->setAttribute('rel', 'stylesheet');
+
+		foreach (($tags = $entryPointLookup->getCssFiles($entryName)) as $i => $file) {
+			$tags[$i] = (clone $htmlTag)
+				->addAttributes([
+					'href' => $this->packages->getUrl($file, $packageName),
+					'integrity' => $integrityHashes[$file] ?? NULL,
+				])
+				->render();
 		}
 
 		return implode("\n", $tags);

@@ -14,10 +14,13 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 
 	private const ENTRYPOINT_DEFAULT_NAME = '_default';
 
+	private const CROSSORIGIN_ALLOWED_VALUES = [ NULL, 'anonymous', 'use-credentials' ];
+
 	/** @var array  */
 	private $defaults = [
 		'output_path' => NULL, # The path where Encore is building the assets - i.e. Encore.setOutputPath()
 		'builds' => [],
+		'crossorigin' => NULL, # crossorigin value when Encore.enableIntegrityHashes() is used, can be NULL (default), anonymous or use-credentials
 		'cache' => [
 			'enabled' => FALSE,
 			'storage' => '@' . Nette\Caching\IStorage::class,
@@ -53,9 +56,18 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 				'defaultName' => NULL !== $config['output_path'] ? self::ENTRYPOINT_DEFAULT_NAME : NULL,
 			]);
 
+		$defaultAttributes = [];
+
+		if (NULL !== $config['crossorigin']) {
+			$defaultAttributes['crossorigin'] = $config['crossorigin'];
+		}
+
 		$builder->addDefinition($this->prefix('tagRenderer'))
 			->setType(SixtyEightPublishers\WebpackEncoreBundle\Latte\TagRenderer::class)
-			->setAutowired(FALSE);
+			->setAutowired(FALSE)
+			->setArguments([
+				'defaultAttributes' => $defaultAttributes,
+			]);
 	}
 
 	/**
@@ -146,9 +158,14 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 		Nette\Utils\Validators::assertField($config, 'builds', 'string[]');
 		Nette\Utils\Validators::assertField($config['latte'], 'jsAssetsMacroName', 'string');
 		Nette\Utils\Validators::assertField($config['latte'], 'cssAssetsMacroName', 'string');
+		Nette\Utils\Validators::assertField($config, 'crossorigin', 'null|string');
 
 		if (isset($config['builds'][self::ENTRYPOINT_DEFAULT_NAME])) {
 			throw new Nette\Utils\AssertionException(sprintf('Key "%s" can\'t be used as build name.', self::ENTRYPOINT_DEFAULT_NAME));
+		}
+
+		if (!in_array($config['crossorigin'], self::CROSSORIGIN_ALLOWED_VALUES, TRUE)) {
+			throw new Nette\Utils\AssertionException(sprintf('Value "%s" for setting "crossorigin" is not allowed', $config['crossorigin']));
 		}
 
 		return $config;
