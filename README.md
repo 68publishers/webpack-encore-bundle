@@ -45,8 +45,8 @@ encore:
     
     # if you want to change macro's names
     latte:
-    jsAssetsMacroName: encore_js # default
-    cssAssetsMacroName: encore_css # default
+        js_assets_macro_name: encore_js # default
+        css_assets_macro_name: encore_css # default
 ```
 
 ## Usage in Latte templates

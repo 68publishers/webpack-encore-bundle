@@ -26,8 +26,8 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			'storage' => '@' . Nette\Caching\IStorage::class,
 		],
 		'latte' => [
-			'jsAssetsMacroName' => 'encore_js',
-			'cssAssetsMacroName' => 'encore_css',
+			'js_assets_macro_name' => 'encore_js',
+			'css_assets_macro_name' => 'encore_css',
 		],
 	];
 
@@ -92,8 +92,8 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 		$latteFactory->addSetup('?->onCompile[] = function ($engine) { ?::install(?, ?, $engine->getCompiler()); }', [
 			'@self',
 			new Nette\PhpGenerator\PhpLiteral(SixtyEightPublishers\WebpackEncoreBundle\Latte\WebpackEncoreMacros::class),
-			$config['latte']['jsAssetsMacroName'],
-			$config['latte']['cssAssetsMacroName'],
+			$config['latte']['js_assets_macro_name'],
+			$config['latte']['css_assets_macro_name'],
 		]);
 	}
 
@@ -156,8 +156,8 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 		Nette\Utils\Validators::assertField($config['cache'], 'enabled', 'bool');
 		Nette\Utils\Validators::assertField($config['cache'], 'storage', 'string|' . Nette\DI\Statement::class);
 		Nette\Utils\Validators::assertField($config, 'builds', 'string[]');
-		Nette\Utils\Validators::assertField($config['latte'], 'jsAssetsMacroName', 'string');
-		Nette\Utils\Validators::assertField($config['latte'], 'cssAssetsMacroName', 'string');
+		Nette\Utils\Validators::assertField($config['latte'], 'js_assets_macro_name', 'string');
+		Nette\Utils\Validators::assertField($config['latte'], 'css_assets_macro_name', 'string');
 		Nette\Utils\Validators::assertField($config, 'crossorigin', 'null|string');
 
 		if (isset($config['builds'][self::ENTRYPOINT_DEFAULT_NAME])) {
