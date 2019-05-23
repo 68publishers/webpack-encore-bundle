@@ -5,7 +5,7 @@ This package allows you to use the `splitEntryChunks()` feature from [Webpack En
 
 ## Installation
 
-The best way to install 68publishers/asset is using Composer:
+The best way to install 68publishers/webpack-encore-bundle is using Composer:
 
 ```bash
 composer require 68publishers/webpack-encore-bundle
