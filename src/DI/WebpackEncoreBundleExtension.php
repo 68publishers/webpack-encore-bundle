@@ -77,11 +77,11 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			'value' => $this->prefix('@tagRenderer'),
 		]);
 
-		$latteFactory->addSetup('?::install(?, ?, ?->getCompiler())', [
+		$latteFactory->addSetup('?->onCompile[] = function ($engine) { ?::install(?, ?, $engine->getCompiler()); }', [
+			'@self',
 			new Nette\PhpGenerator\PhpLiteral(SixtyEightPublishers\WebpackEncoreBundle\Latte\WebpackEncoreMacros::class),
 			$config['latte']['jsAssetsMacroName'],
 			$config['latte']['cssAssetsMacroName'],
-			'@self',
 		]);
 	}
 
