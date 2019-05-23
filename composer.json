@@ -1,0 +1,37 @@
+{
+	"name": "68publishers/webpack-encore-bundle",
+	"description": "Nette integration with Webpack Encore! https://symfony.com/webpack-encore",
+	"keywords": ["68publishers", "webpack", "webpack-encore", "webpack-encore-bundle", "nette"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Tomáš Glawaty",
+			"email": "tomasglawaty@icloud.com"
+		}
+	],
+	"require": {
+		"php": "~7.1",
+		"nette/di": "~2.4",
+		"nette/utils": "~2.4",
+		"nette/caching": "^2.4",
+		"latte/latte": "~2.4"
+	},
+	"require-dev": {
+		"nette/tester": "^2.2",
+		"nette/application": "~2.4",
+		"friendsofphp/php-cs-fixer": "^2.15",
+		"68publishers/asset": "^1.0",
+		"mockery/mockery": "^1.2"
+	},
+	"suggest": {
+		"68publishers/asset": "The recommended way to get Symfony Asset Component into your project."
+	},
+	"autoload": {
+		"classmap": ["src/"],
+		"files": []
+	},
+	"autoload-dev": {
+		"classmap": ["tests/"],
+		"files": []
+	}
+}
