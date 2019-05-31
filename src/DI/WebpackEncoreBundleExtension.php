@@ -15,7 +15,7 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 
 	private const ENTRYPOINT_DEFAULT_NAME = '_default';
 
-	private const CROSSORIGIN_ALLOWED_VALUES = [ NULL, 'anonymous', 'use-credentials' ];
+	private const CROSSORIGIN_ALLOWED_VALUES = [NULL, 'anonymous', 'use-credentials'];
 
 	/** @var array  */
 	private $defaults = [
