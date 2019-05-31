@@ -1,5 +1,11 @@
 # WebpackEncoreBundle: Nette integration with Webpack Encore!
 
+[![Build Status][ico-travis]][link-travis]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Total Downloads][ico-downloads]][link-downloads]
+[![Latest Version on Packagist][ico-version]][link-packagist]
+
 This package is inspired by [symfony/webpack-encore-bundle](https://github.com/symfony/webpack-encore-bundle).
 This package allows you to use the `splitEntryChunks()` feature from [Webpack Encore](https://symfony.com/doc/current/frontend.html) by reading an `entrypoints.json` file and helping you render all of the dynamic `script` and `link` tags needed.
 
@@ -78,3 +84,15 @@ and
 ```bash
 vendor/bin/tester ./tests
 ```
+
+[ico-version]: https://img.shields.io/packagist/v/68publishers/webpack-encore-bundle.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/68publishers/webpack-encore-bundle/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/68publishers/webpack-encore-bundle.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/68publishers/webpack-encore-bundle.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/68publishers/webpack-encore-bundle.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/68publishers/webpack-encore-bundle
+[link-travis]: https://travis-ci.org/68publishers/webpack-encore-bundle
+[link-scrutinizer]: https://scrutinizer-ci.com/g/68publishers/webpack-encore-bundle/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/68publishers/webpack-encore-bundle
+[link-downloads]: https://packagist.org/packages/68publishers/webpack-encore-bundle
