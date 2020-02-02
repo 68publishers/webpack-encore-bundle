@@ -30,7 +30,7 @@ final class EntryPointLookupProviderTest extends Tester\TestCase
 		$provider = new SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\EntryPointLookupProvider([]);
 
 		Tester\Assert::exception(
-			function () use ($provider) {
+			static function () use ($provider) {
 				$provider->getEntryPointLookup('foo');
 			},
 			SixtyEightPublishers\WebpackEncoreBundle\Exception\EntryPointNotFoundException::class,
@@ -46,7 +46,7 @@ final class EntryPointLookupProviderTest extends Tester\TestCase
 		$provider = new SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\EntryPointLookupProvider([]);
 
 		Tester\Assert::exception(
-			function () use ($provider) {
+			static function () use ($provider) {
 				$provider->getEntryPointLookup();
 			},
 			SixtyEightPublishers\WebpackEncoreBundle\Exception\EntryPointNotFoundException::class,

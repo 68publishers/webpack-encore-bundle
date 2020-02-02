@@ -123,11 +123,16 @@ JSON;
 	 */
 	public function testExceptionOnInvalidJson(): void
 	{
-		$this->entryPointLookup = $this->createEntryPointLookup($this->createJsonFile('abcd'));
+		$filename = $this->createJsonFile('abcd');
+		$this->entryPointLookup = $this->createEntryPointLookup($filename);
 
-		Tester\Assert::exception(function () {
-			$this->entryPointLookup->getCssFiles('an_entry');
-		}, Nette\Utils\JsonException::class, 'Syntax error');
+		Tester\Assert::exception(
+			function () {
+				$this->entryPointLookup->getCssFiles('an_entry');
+			},
+			SixtyEightPublishers\WebpackEncoreBundle\Exception\InvalidStateException::class,
+			sprintf('The entrypoints file "%s" is not valid JSON.', $filename)
+		);
 	}
 
 	/**
@@ -143,7 +148,7 @@ JSON;
 				$this->entryPointLookup->getJsFiles('an_entry');
 			},
 			SixtyEightPublishers\WebpackEncoreBundle\Exception\InvalidStateException::class,
-			sprintf('Could not find an "entrypoints" key in the "%s" file', $filename)
+			sprintf('Could not find an "entrypoints" key in the "%s" file.', $filename)
 		);
 	}
 

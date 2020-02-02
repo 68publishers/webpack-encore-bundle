@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SixtyEightPublishers\WebpackEncoreBundle\Helper;
+namespace SixtyEightPublishers\WebpackEncoreBundle\Tests\Helper;
 
 use Nette;
 use Tester;
@@ -22,15 +22,15 @@ final class ContainerFactory
 			define('TEMP_PATH', __DIR__ . '/../temp');
 		}
 
-		$loader = new Nette\DI\ContainerLoader(TEMP_PATH . '/cache/Nette.Configurator', TRUE);
-		$class = $loader->load(function (Nette\DI\Compiler $compiler) use ($config): void {
-			$compiler->addExtension('latte', new Nette\Bridges\ApplicationDI\LatteExtension(TEMP_PATH . '/cache/latte', TRUE));
+		$loader = new Nette\DI\ContainerLoader(TEMP_PATH . '/Nette.Configurator_' . md5($name), TRUE);
+		$class = $loader->load(static function (Nette\DI\Compiler $compiler) use ($config): void {
+			$compiler->addExtension('latte', new Nette\Bridges\ApplicationDI\LatteExtension(TEMP_PATH . '/latte', TRUE));
 			$compiler->addExtension('asset', new SixtyEightPublishers\Asset\DI\AssetExtension());
 			$compiler->addExtension('encore', new SixtyEightPublishers\WebpackEncoreBundle\DI\WebpackEncoreBundleExtension());
 
 			$compiler->addConfig([
 				'parameters' => [
-					'filesDir' => realpath(__DIR__ . '/../files'),
+					'filesDir' => dirname(__DIR__) . '/files',
 				],
 			]);
 

@@ -17,12 +17,12 @@ class WebpackEncoreBundleExtensionIntegrationTest extends Tester\TestCase
 	 */
 	public function testRegisteredEntryPointLookupProviderService(): void
 	{
-		$container = SixtyEightPublishers\WebpackEncoreBundle\Helper\ContainerFactory::createContainer(
-			static::class . __METHOD__,
+		$container = SixtyEightPublishers\WebpackEncoreBundle\Tests\Helper\ContainerFactory::createContainer(
+			__METHOD__,
 			__DIR__ . '/../../files/encore.neon'
 		);
 
-		Tester\Assert::noError(function () use ($container) {
+		Tester\Assert::noError(static function () use ($container) {
 			$container->getService('encore.entryPointLookupProvider');
 		});
 
@@ -31,7 +31,7 @@ class WebpackEncoreBundleExtensionIntegrationTest extends Tester\TestCase
 
 		Tester\Assert::type(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider::class, $entryPointLookupProvider);
 
-		Tester\Assert::noError(function () use ($entryPointLookupProvider) {
+		Tester\Assert::noError(static function () use ($entryPointLookupProvider) {
 			$entryPointLookupProvider->getEntryPointLookup();
 			$entryPointLookupProvider->getEntryPointLookup('different_build');
 		});
@@ -42,12 +42,12 @@ class WebpackEncoreBundleExtensionIntegrationTest extends Tester\TestCase
 	 */
 	public function testRegisteredCacheService(): void
 	{
-		$container = SixtyEightPublishers\WebpackEncoreBundle\Helper\ContainerFactory::createContainer(
-			static::class . __METHOD__,
+		$container = SixtyEightPublishers\WebpackEncoreBundle\Tests\Helper\ContainerFactory::createContainer(
+			__METHOD__,
 			__DIR__ . '/../../files/encore_cache_enabled.neon'
 		);
 
-		Tester\Assert::noError(function () use ($container) {
+		Tester\Assert::noError(static function () use ($container) {
 			$container->getService('encore.cache.cache');
 		});
 

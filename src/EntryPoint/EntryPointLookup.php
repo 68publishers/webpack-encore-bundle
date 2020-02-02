@@ -43,6 +43,7 @@ final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvide
 	 * @param string $key
 	 *
 	 * @return array
+	 * @throws \Throwable
 	 */
 	private function getEntryFiles(string $entryName, string $key): array
 	{
@@ -63,6 +64,7 @@ final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvide
 	 *
 	 * @return array
 	 * @throws \SixtyEightPublishers\WebpackEncoreBundle\Exception\EntryPointNotFoundException
+	 * @throws \Throwable
 	 */
 	private function getEntryData(string $entryName): array
 	{
@@ -93,6 +95,7 @@ final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvide
 	/**
 	 * @return array
 	 * @throws \SixtyEightPublishers\WebpackEncoreBundle\Exception\InvalidStateException
+	 * @throws \Throwable
 	 */
 	private function getEntriesData(): array
 	{
@@ -111,11 +114,18 @@ final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvide
 			));
 		}
 
-		$this->entriesData = Nette\Utils\Json::decode(file_get_contents($this->entryPointJsonPath), Nette\Utils\Json::FORCE_ARRAY);
+		try {
+			$this->entriesData = Nette\Utils\Json::decode(file_get_contents($this->entryPointJsonPath), Nette\Utils\Json::FORCE_ARRAY);
+		} catch (Nette\Utils\JsonException $e) {
+			throw new SixtyEightPublishers\WebpackEncoreBundle\Exception\InvalidStateException(sprintf(
+				'The entrypoints file "%s" is not valid JSON.',
+				$this->entryPointJsonPath
+			), 0, $e);
+		}
 
 		if (!isset($this->entriesData['entrypoints'])) {
 			throw new SixtyEightPublishers\WebpackEncoreBundle\Exception\InvalidStateException(sprintf(
-				'Could not find an "entrypoints" key in the "%s" file',
+				'Could not find an "entrypoints" key in the "%s" file.',
 				$this->entryPointJsonPath
 			));
 		}
@@ -139,6 +149,8 @@ final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvide
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @throws \Throwable
 	 */
 	public function getJsFiles(string $entryName): array
 	{
@@ -147,6 +159,8 @@ final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvide
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @throws \Throwable
 	 */
 	public function getCssFiles(string $entryName): array
 	{
@@ -165,6 +179,8 @@ final class EntryPointLookup implements IEntryPointLookup, IIntegrityDataProvide
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @throws \Throwable
 	 */
 	public function getIntegrityData(): array
 	{

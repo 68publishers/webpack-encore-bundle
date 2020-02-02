@@ -21,8 +21,8 @@ final class WebpackEncoreMacrosIntegrationTest extends Tester\TestCase
 	{
 		parent::setUp();
 
-		$container = SixtyEightPublishers\WebpackEncoreBundle\Helper\ContainerFactory::createContainer(
-			static::class . __METHOD__,
+		$container = SixtyEightPublishers\WebpackEncoreBundle\Tests\Helper\ContainerFactory::createContainer(
+			__METHOD__,
 			__DIR__ . '/../../files/encore.neon'
 		);
 

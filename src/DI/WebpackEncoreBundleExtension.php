@@ -6,6 +6,7 @@ namespace SixtyEightPublishers\WebpackEncoreBundle\DI;
 
 use Latte;
 use Nette;
+use Symfony;
 use SixtyEightPublishers;
 
 final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
@@ -33,6 +34,8 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @throws \Nette\Utils\AssertionException
 	 */
 	public function loadConfiguration(): void
 	{
@@ -72,13 +75,15 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @throws \Nette\Utils\AssertionException
 	 */
 	public function beforeCompile(): void
 	{
 		$config = $this->getValidConfig();
 		$builder = $this->getContainerBuilder();
 
-		if (NULL === $builder->getByType('Symfony\Component\Asset\Packages', FALSE)) {
+		if (NULL === $builder->getByType(Symfony\Component\Asset\Packages::class, FALSE)) {
 			throw new \RuntimeException('Missing service of type Symfony\Component\Asset\Packages that is required by this package. You can configure and register it manually or you can use package 68publishers/asset (recommended way).');
 		}
 

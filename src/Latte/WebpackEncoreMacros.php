@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SixtyEightPublishers\WebpackEncoreBundle\Latte;
 
 use Latte;
-use SixtyEightPublishers;
 
 final class WebpackEncoreMacros extends Latte\Macros\MacroSet
 {
@@ -29,6 +28,7 @@ final class WebpackEncoreMacros extends Latte\Macros\MacroSet
 	 * @param \Latte\PhpWriter $writer
 	 *
 	 * @return string
+	 * @throws \Latte\CompileException
 	 */
 	public function macroJsAssets(Latte\MacroNode $node, Latte\PhpWriter $writer): string
 	{
@@ -44,6 +44,7 @@ final class WebpackEncoreMacros extends Latte\Macros\MacroSet
 	 * @param \Latte\PhpWriter $writer
 	 *
 	 * @return string
+	 * @throws \Latte\CompileException
 	 */
 	public function macroCssAssets(Latte\MacroNode $node, Latte\PhpWriter $writer): string
 	{
