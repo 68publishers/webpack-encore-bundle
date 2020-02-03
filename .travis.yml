@@ -1,9 +1,9 @@
 language: php
 
 php:
-  - 7.1
   - 7.2
   - 7.3
+  - 7.4
 
 env:
   - TESTER_PHP_BIN="php-cgi"
@@ -12,27 +12,41 @@ before_install:
   - composer self-update
 
 install:
-  - composer install --no-interaction --prefer-source
-
-before_script:
-  - travis_retry composer update
-  - travis_retry composer create-project nette/code-checker temp/code-checker ~2.5 --no-interaction
+  - travis_retry composer install --no-progress --prefer-dist
 
 script:
-  # check coding standard for our code
-  - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run
-  - vendor/bin/tester -p $TESTER_PHP_BIN -s ./tests # -c ./tests/php.ini
-  - vendor/bin/tester ./tests --coverage coverage.xml --coverage-src ./src -d zend_extension=xdebug.so
+  - vendor/bin/tester ./tests -s -d zend_extension=xdebug.so
 
 after_failure:
   # print content of output files *.actual
   - for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done
 
-after_script:
-  # get scrutinizer for coverage upload
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
+jobs:
+  include:
+    -   name: Lowest Dependencies
+        install:
+          - travis_retry composer update --no-progress --prefer-dist --prefer-lowest --prefer-stable
+
+    -   name: Nette Code Checker
+        install:
+          - travis_retry composer create-project nette/code-checker temp/code-checker ~2.5 --no-progress
+        script:
+          - php temp/code-checker/code-checker --strict-types --short-arrays
+
+    -   name: Php-Cs-Fixer
+        script:
+          - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run
+
+    -   stage: Code Coverage
+        script:
+          - vendor/bin/tester -p phpdbg tests -s --coverage ./coverage.xml --coverage-src ./src -d zend_extension=xdebug.so
+        after_script:
+          - wget https://scrutinizer-ci.com/ocular.phar
+          - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
+
+  allow_failures:
+    -   name: Nette Code Checker
 
 cache:
-    directories:
-        - $HOME/.composer/cache
+  directories:
+    - $HOME/.composer/cache
