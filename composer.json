@@ -11,15 +11,15 @@
 	],
 	"require": {
 		"php": "^7.2",
-		"nette/di": "^2.4.16",
-		"nette/utils": "^2.4.2",
-		"nette/caching": "^2.5",
-		"latte/latte": "^2.4",
+		"nette/di": "^3.0",
+		"nette/utils": "^3.0",
+		"nette/caching": "^3.0",
+		"latte/latte": "^2.5",
 		"symfony/asset": "^4.2 | ^5.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.2",
-		"nette/application": "^2.4",
+		"nette/application": "^3.0",
 		"friendsofphp/php-cs-fixer": "^2.15",
 		"68publishers/asset": "^1.0",
 		"mockery/mockery": "^1.2"
