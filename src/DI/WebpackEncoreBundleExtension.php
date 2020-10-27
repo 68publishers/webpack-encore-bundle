@@ -136,7 +136,7 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			$storage = $builder->addDefinition($this->prefix('cache.storage'))
 				->setType(Nette\Caching\IStorage::class)
 				->setFactory($storage)
-				->setInject(FALSE);
+                ->addTag(Nette\DI\Extensions\InjectExtension::TAG_INJECT);
 		}
 
 		return $builder->addDefinition($this->prefix('cache.cache'))
@@ -145,7 +145,7 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 				'storage' => $storage,
 				'namespace' => str_replace('\\', '.', SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookup::class),
 			])
-			->setInject(FALSE);
+			->addTag(Nette\DI\Extensions\InjectExtension::TAG_INJECT);
 	}
 
 	/**
