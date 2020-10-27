@@ -18,6 +18,9 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 
 	private const CROSSORIGIN_ALLOWED_VALUES = [NULL, 'anonymous', 'use-credentials'];
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getConfigSchema(): Nette\Schema\Schema
 	{
 		return Nette\Schema\Expect::structure([
@@ -47,6 +50,9 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 		]);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
@@ -82,6 +88,9 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			]);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function beforeCompile(): void
 	{
 		$builder = $this->getContainerBuilder();
