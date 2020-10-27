@@ -7,6 +7,7 @@ namespace SixtyEightPublishers\WebpackEncoreBundle\DI;
 use Latte;
 use Nette;
 use Symfony;
+use RuntimeException;
 use SixtyEightPublishers;
 
 final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
@@ -46,22 +47,17 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 		]);
 	}
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Nette\Utils\AssertionException
-	 */
 	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
-		$cache = $this->registerCache($this->config->cache->enabled, $this->config->cache->storage);
+		$cache = $this->registerCache($this->getConfig()->cache->enabled, $this->getConfig()->cache->storage);
 		$lookups = [];
 
-		if (NULL !== $this->config->output_path) {
-			$lookups[] = $this->createEntryPointLookupStatement(self::ENTRYPOINT_DEFAULT_NAME, $this->config->output_path, $cache);
+		if (NULL !== $this->getConfig()->output_path) {
+			$lookups[] = $this->createEntryPointLookupStatement(self::ENTRYPOINT_DEFAULT_NAME, $this->getConfig()->output_path, $cache);
 		}
 
-		foreach ($this->config->builds as $name => $path) {
+		foreach ($this->getConfig()->builds as $name => $path) {
 			$lookups[] = $this->createEntryPointLookupStatement($name, $path, $cache);
 		}
 
@@ -69,13 +65,13 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			->setType(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider::class)
 			->setFactory(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\EntryPointLookupProvider::class, [
 				'lookups' => $lookups,
-				'defaultName' => NULL !== $this->config->output_path ? self::ENTRYPOINT_DEFAULT_NAME : NULL,
+				'defaultName' => NULL !== $this->getConfig()->output_path ? self::ENTRYPOINT_DEFAULT_NAME : NULL,
 			]);
 
 		$defaultAttributes = [];
 
-		if (NULL !== $this->config->crossorigin) {
-			$defaultAttributes['crossorigin'] = $this->config->crossorigin;
+		if (NULL !== $this->getConfig()->crossorigin) {
+			$defaultAttributes['crossorigin'] = $this->getConfig()->crossorigin;
 		}
 
 		$builder->addDefinition($this->prefix('tagRenderer'))
@@ -86,17 +82,12 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			]);
 	}
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Nette\Utils\AssertionException
-	 */
 	public function beforeCompile(): void
 	{
 		$builder = $this->getContainerBuilder();
 
 		if (NULL === $builder->getByType(Symfony\Component\Asset\Packages::class, FALSE)) {
-			throw new \RuntimeException('Missing service of type Symfony\Component\Asset\Packages that is required by this package. You can configure and register it manually or you can use package 68publishers/asset (recommended way).');
+			throw new RuntimeException('Missing service of type Symfony\Component\Asset\Packages that is required by this package. You can configure and register it manually or you can use package 68publishers/asset (recommended way).');
 		}
 
 		$latteFactory = $builder->getDefinition($builder->getByType(Latte\Engine::class) ?? 'nette.latteFactory');
@@ -115,11 +106,11 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 	}
 
 	/**
-	 * @param string                           $name
-	 * @param string                           $path
-	 * @param \Nette\DI\ServiceDefinition|NULL $cache
+	 * @param string                                      $name
+	 * @param string                                      $path
+	 * @param Nette\DI\Definitions\ServiceDefinition|NULL $cache
 	 *
-	 * @return \Nette\DI\Definitions\Statement
+	 * @return Nette\DI\Definitions\Statement
 	 */
 	private function createEntryPointLookupStatement(string $name, string $path, ?Nette\DI\Definitions\ServiceDefinition $cache): Nette\DI\Definitions\Statement
 	{
@@ -134,7 +125,7 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 	 * @param bool  $enabled
 	 * @param mixed $storage
 	 *
-	 * @return \Nette\DI\Definitions\ServiceDefinition|NULL
+	 * @return Nette\DI\Definitions\ServiceDefinition|NULL
 	 */
 	private function registerCache(bool $enabled, $storage): ?Nette\DI\Definitions\ServiceDefinition
 	{
