@@ -11,7 +11,7 @@
 	],
 	"require": {
 		"php": "^7.2",
-		"nette/di": "^3.0",
+		"nette/di": "^3.0.3",
 		"nette/utils": "^3.0",
 		"nette/caching": "^3.0",
 		"latte/latte": "^2.5",
