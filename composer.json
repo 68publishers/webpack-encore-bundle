@@ -21,7 +21,7 @@
 		"nette/tester": "^2.2",
 		"nette/application": "^3.0",
 		"friendsofphp/php-cs-fixer": "^2.15",
-		"68publishers/asset": "^1.0",
+		"68publishers/asset": "^2.0",
 		"mockery/mockery": "^1.2"
 	},
 	"suggest": {
