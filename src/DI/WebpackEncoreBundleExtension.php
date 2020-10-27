@@ -17,20 +17,34 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 
 	private const CROSSORIGIN_ALLOWED_VALUES = [NULL, 'anonymous', 'use-credentials'];
 
-	/** @var array  */
-	private $defaults = [
-		'output_path' => NULL, # The path where Encore is building the assets - i.e. Encore.setOutputPath()
-		'builds' => [],
-		'crossorigin' => NULL, # crossorigin value when Encore.enableIntegrityHashes() is used, can be NULL (default), anonymous or use-credentials
-		'cache' => [
-			'enabled' => FALSE,
-			'storage' => '@' . Nette\Caching\IStorage::class,
-		],
-		'latte' => [
-			'js_assets_macro_name' => 'encore_js',
-			'css_assets_macro_name' => 'encore_css',
-		],
-	];
+	public function getConfigSchema(): Nette\Schema\Schema
+	{
+		return Nette\Schema\Expect::structure([
+			'output_path' => Nette\Schema\Expect::string()->nullable(), # The path where Encore is building the assets - i.e. Encore.setOutputPath()
+			'builds' => Nette\Schema\Expect::array()->items('string')->assert(function (array $value): bool {
+				if (isset($value[self::ENTRYPOINT_DEFAULT_NAME])) {
+					throw new Nette\Utils\AssertionException(sprintf('Key "%s" can\'t be used as build name.', self::ENTRYPOINT_DEFAULT_NAME));
+				}
+
+				return TRUE;
+			}),
+			'crossorigin' => Nette\Schema\Expect::string()->nullable()->assert(function (?string $value): bool {
+				if (!in_array($value, self::CROSSORIGIN_ALLOWED_VALUES, TRUE)) {
+					throw new Nette\Utils\AssertionException(sprintf('Value "%s" for setting "crossorigin" is not allowed', $value));
+				}
+
+				return TRUE;
+			}), # crossorigin value when Encore.enableIntegrityHashes() is used, can be NULL (default), anonymous or use-credentials
+			'cache' => Nette\Schema\Expect::structure([
+				'enabled' => Nette\Schema\Expect::bool(FALSE),
+				'storage' => Nette\Schema\Expect::string('@' . Nette\Caching\IStorage::class)->dynamic(),
+			]),
+			'latte' => Nette\Schema\Expect::structure([
+				'js_assets_macro_name' => Nette\Schema\Expect::string('encore_js'),
+				'css_assets_macro_name' => Nette\Schema\Expect::string('encore_css'),
+			]),
+		]);
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -39,16 +53,15 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 	 */
 	public function loadConfiguration(): void
 	{
-		$config = $this->getValidConfig();
 		$builder = $this->getContainerBuilder();
-		$cache = $this->registerCache($config['cache']['enabled'], $config['cache']['storage']);
+		$cache = $this->registerCache($this->config->cache->enabled, $this->config->cache->storage);
 		$lookups = [];
 
-		if (NULL !== $config['output_path']) {
-			$lookups[] = $this->createEntryPointLookupStatement(self::ENTRYPOINT_DEFAULT_NAME, $config['output_path'], $cache);
+		if (NULL !== $this->config->output_path) {
+			$lookups[] = $this->createEntryPointLookupStatement(self::ENTRYPOINT_DEFAULT_NAME, $this->config->output_path, $cache);
 		}
 
-		foreach ($config['builds'] as $name => $path) {
+		foreach ($this->config->builds as $name => $path) {
 			$lookups[] = $this->createEntryPointLookupStatement($name, $path, $cache);
 		}
 
@@ -56,13 +69,13 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			->setType(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookupProvider::class)
 			->setFactory(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\EntryPointLookupProvider::class, [
 				'lookups' => $lookups,
-				'defaultName' => NULL !== $config['output_path'] ? self::ENTRYPOINT_DEFAULT_NAME : NULL,
+				'defaultName' => NULL !== $this->config->output_path ? self::ENTRYPOINT_DEFAULT_NAME : NULL,
 			]);
 
 		$defaultAttributes = [];
 
-		if (NULL !== $config['crossorigin']) {
-			$defaultAttributes['crossorigin'] = $config['crossorigin'];
+		if (NULL !== $this->config->crossorigin) {
+			$defaultAttributes['crossorigin'] = $this->config->crossorigin;
 		}
 
 		$builder->addDefinition($this->prefix('tagRenderer'))
@@ -80,7 +93,6 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 	 */
 	public function beforeCompile(): void
 	{
-		$config = $this->getValidConfig();
 		$builder = $this->getContainerBuilder();
 
 		if (NULL === $builder->getByType(Symfony\Component\Asset\Packages::class, FALSE)) {
@@ -97,8 +109,8 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 		$latteFactory->getResultDefinition()->addSetup('?->onCompile[] = function ($engine) { ?::install(?, ?, $engine->getCompiler()); }', [
 			'@self',
 			new Nette\PhpGenerator\PhpLiteral(SixtyEightPublishers\WebpackEncoreBundle\Latte\WebpackEncoreMacros::class),
-			$config['latte']['js_assets_macro_name'],
-			$config['latte']['css_assets_macro_name'],
+			$this->getConfig()->latte->js_assets_macro_name,
+			$this->getConfig()->latte->css_assets_macro_name,
 		]);
 	}
 
@@ -107,11 +119,11 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 	 * @param string                           $path
 	 * @param \Nette\DI\ServiceDefinition|NULL $cache
 	 *
-	 * @return \Nette\DI\Statement
+	 * @return \Nette\DI\Definitions\Statement
 	 */
-	private function createEntryPointLookupStatement(string $name, string $path, ?Nette\DI\ServiceDefinition $cache): Nette\DI\Statement
+	private function createEntryPointLookupStatement(string $name, string $path, ?Nette\DI\Definitions\ServiceDefinition $cache): Nette\DI\Definitions\Statement
 	{
-		return new Nette\DI\Statement(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\EntryPointLookup::class, [
+		return new Nette\DI\Definitions\Statement(SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\EntryPointLookup::class, [
 			'buildName' => $name,
 			'entryPointJsonPath' => $path . '/' . self::ENTRYPOINTS_FILE_NAME,
 			'cache' => $cache,
@@ -122,9 +134,9 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 	 * @param bool  $enabled
 	 * @param mixed $storage
 	 *
-	 * @return \Nette\DI\ServiceDefinition|NULL
+	 * @return \Nette\DI\Definitions\ServiceDefinition|NULL
 	 */
-	private function registerCache(bool $enabled, $storage): ?Nette\DI\ServiceDefinition
+	private function registerCache(bool $enabled, $storage): ?Nette\DI\Definitions\ServiceDefinition
 	{
 		if (FALSE === $enabled) {
 			return NULL;
@@ -136,7 +148,7 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 			$storage = $builder->addDefinition($this->prefix('cache.storage'))
 				->setType(Nette\Caching\IStorage::class)
 				->setFactory($storage)
-                ->addTag(Nette\DI\Extensions\InjectExtension::TAG_INJECT);
+				->addTag(Nette\DI\Extensions\InjectExtension::TAG_INJECT);
 		}
 
 		return $builder->addDefinition($this->prefix('cache.cache'))
@@ -146,33 +158,5 @@ final class WebpackEncoreBundleExtension extends Nette\DI\CompilerExtension
 				'namespace' => str_replace('\\', '.', SixtyEightPublishers\WebpackEncoreBundle\EntryPoint\IEntryPointLookup::class),
 			])
 			->addTag(Nette\DI\Extensions\InjectExtension::TAG_INJECT);
-	}
-
-	/**
-	 * @return array
-	 * @throws \Nette\Utils\AssertionException
-	 */
-	private function getValidConfig(): array
-	{
-		/** @noinspection PhpInternalEntityUsedInspection */
-		$config = $this->validateConfig(Nette\DI\Helpers::expand($this->defaults, $this->getContainerBuilder()->parameters));
-
-		Nette\Utils\Validators::assertField($config, 'output_path', 'null|string');
-		Nette\Utils\Validators::assertField($config['cache'], 'enabled', 'bool');
-		Nette\Utils\Validators::assertField($config['cache'], 'storage', 'string|' . Nette\DI\Statement::class);
-		Nette\Utils\Validators::assertField($config, 'builds', 'string[]');
-		Nette\Utils\Validators::assertField($config['latte'], 'js_assets_macro_name', 'string');
-		Nette\Utils\Validators::assertField($config['latte'], 'css_assets_macro_name', 'string');
-		Nette\Utils\Validators::assertField($config, 'crossorigin', 'null|string');
-
-		if (isset($config['builds'][self::ENTRYPOINT_DEFAULT_NAME])) {
-			throw new Nette\Utils\AssertionException(sprintf('Key "%s" can\'t be used as build name.', self::ENTRYPOINT_DEFAULT_NAME));
-		}
-
-		if (!in_array($config['crossorigin'], self::CROSSORIGIN_ALLOWED_VALUES, TRUE)) {
-			throw new Nette\Utils\AssertionException(sprintf('Value "%s" for setting "crossorigin" is not allowed', $config['crossorigin']));
-		}
-
-		return $config;
 	}
 }
