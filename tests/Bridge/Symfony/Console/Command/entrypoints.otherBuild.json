@@ -1,0 +1,13 @@
+{
+	"entrypoints": {
+		"other_entry": {
+			"js": [
+				"file1.js",
+				"file2.js"
+			],
+			"css": [
+				"styles.css"
+			]
+		}
+	}
+}

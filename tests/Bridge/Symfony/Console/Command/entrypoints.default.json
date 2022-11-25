@@ -1,0 +1,25 @@
+{
+	"entrypoints": {
+		"my_entry": {
+			"js": [
+				"file1.js",
+				"file2.js"
+			],
+			"css": [
+				"styles.css",
+				"styles2.css"
+			]
+		},
+		"other_entry": {
+			"js": [
+				"file1.js",
+				"file3.js"
+			],
+			"css": []
+		}
+	},
+	"integrity": {
+		"file1.js": "sha384-Q86c+opr0lBUPWN28BLJFqmLhho+9ZcJpXHorQvX6mYDWJ24RQcdDarXFQYN8HLc",
+		"styles.css": "sha384-ymG7OyjISWrOpH9jsGvajKMDEOP/mKJq8bHC0XdjQA6P8sg2nu+2RLQxcNNwE/3J"
+	}
+}
