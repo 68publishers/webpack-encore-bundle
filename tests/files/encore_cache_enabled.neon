@@ -1,8 +1,0 @@
-asset:
-	json_manifest_path: %filesDir%/build/manifest.json
-
-encore:
-	output_path: %filesDir%/build
-	cache:
-		enabled: yes
-		storage: Nette\Caching\Storages\MemoryStorage()
