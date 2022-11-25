@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+    php74:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: php74
+        container_name: 68publishers.webpack-encore-bundle.74
+        volumes:
+            - .:/var/www/html:cached
+
+    php80:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: php80
+        container_name: 68publishers.webpack-encore-bundle.80
+        volumes:
+            - .:/var/www/html:cached
+
+    php81:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: php81
+        container_name: 68publishers.webpack-encore-bundle.81
+        volumes:
+            - .:/var/www/html:cached
+
+    php82:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: php82
+        container_name: 68publishers.webpack-encore-bundle.82
+        volumes:
+            - .:/var/www/html:cached

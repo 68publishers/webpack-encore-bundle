@@ -1,0 +1,2 @@
+services:
+	console.command.warmup_cache: SixtyEightPublishers\WebpackEncoreBundle\Bridge\Symfony\Console\Command\WarmupCacheCommand
