@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 $finder = PhpCsFixer\Finder::create()
 	->in(__DIR__ . '/src')
 	->in(__DIR__ . '/tests')
-;
+	->name(['*.php', '*.phpt']);
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
 	->setUsingCache(FALSE)
 	->setIndent("\t")
 	->setRules([
 		'@PSR2' => TRUE,
 		'array_syntax' => ['syntax' => 'short'],
-		'trailing_comma_in_multiline_array' => true,
+		'trailing_comma_in_multiline' => TRUE,
 		'constant_case' => [
 			'case' => 'upper',
 		],
@@ -28,11 +30,19 @@ return PhpCsFixer\Config::create()
 		],
 		'ordered_imports' => [
 			'sort_algorithm' => 'length',
+			'imports_order' => ['class', 'function', 'const'],
 		],
 		'no_unused_imports' => TRUE,
 		'single_line_after_imports' => TRUE,
 		'no_leading_import_slash' => TRUE,
+		'global_namespace_import' => [
+			'import_constants' => TRUE,
+			'import_functions' => TRUE,
+			'import_classes' => TRUE,
+		],
+		'concat_space' => [
+			'spacing' => 'one',
+		],
 	])
 	->setRiskyAllowed(TRUE)
-	->setFinder($finder)
-;
+	->setFinder($finder);
