@@ -8,6 +8,7 @@ use Tester\Assert;
 use Tester\TestCase;
 use Nette\Http\IResponse;
 use Nette\Application\Application;
+use Tester\CodeCoverage\Collector;
 use SixtyEightPublishers\WebpackEncoreBundle\Tests\Bridge\Nette\DI\ContainerFactory;
 use function assert;
 use function str_replace;
@@ -72,6 +73,14 @@ XX);
 XX);
 
 		Assert::same($expected, $response->getHeader('Link'));
+	}
+
+	protected function tearDown(): void
+	{
+		# save manually partial code coverage to free memory
+		if (Collector::isStarted()) {
+			Collector::save();
+		}
 	}
 }
 

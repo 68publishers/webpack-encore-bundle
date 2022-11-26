@@ -9,6 +9,7 @@ use Tester\Assert;
 use Tester\TestCase;
 use RuntimeException;
 use Nette\Application\Application;
+use Tester\CodeCoverage\Collector;
 use Psr\Cache\CacheItemPoolInterface;
 use Nette\DI\InvalidConfigurationException;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookup;
@@ -192,6 +193,14 @@ final class WebpackEncoreBundleExtensionTest extends TestCase
 			Assert::same($cacheKey, $entryPointLookup->cacheKey);
 			Assert::same($strictMode, $entryPointLookup->strictMode);
 		}, NULL, EntryPointLookup::class));
+	}
+
+	protected function tearDown(): void
+	{
+		# save manually partial code coverage to free memory
+		if (Collector::isStarted()) {
+			Collector::save();
+		}
 	}
 }
 
