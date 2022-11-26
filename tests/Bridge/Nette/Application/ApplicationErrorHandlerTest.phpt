@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SixtyEightPublishers\Asset\Tests\Bridge\Nette\Application;
+namespace SixtyEightPublishers\WebpackEncoreBundle\Tests\Bridge\Nette\Application;
 
 use Mockery;
 use Tester\Assert;
@@ -23,7 +23,7 @@ final class ApplicationErrorHandlerTest extends TestCase
 
 		ApplicationErrorHandler::register($application, $entrypointCollection, []);
 
-		Assert::count(1, $application->onError);
+		Assert::count(1, $application->onError ?? []);
 		Assert::type(ApplicationErrorHandler::class, $application->onError[0]);
 	}
 

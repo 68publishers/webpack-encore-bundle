@@ -90,7 +90,7 @@ final class TagRenderer
 			$this->renderedFiles['scripts'][] = $attributes['src'];
 		}
 
-		return implode('', $scriptTags);
+		return implode("\n", $scriptTags);
 	}
 
 	/**
@@ -132,7 +132,7 @@ final class TagRenderer
 			$this->renderedFiles['styles'][] = $attributes['href'];
 		}
 
-		return implode('', $linkTags);
+		return implode("\n", $linkTags);
 	}
 
 	/**

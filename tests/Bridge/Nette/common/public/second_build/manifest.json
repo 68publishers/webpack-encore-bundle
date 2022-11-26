@@ -1,0 +1,5 @@
+{
+	"file1.js": "/second_build/file1.abc.js",
+	"file2.js": "/second_build/file2.abc.js",
+	"styles.css": "/second_build/styles.abc.css"
+}

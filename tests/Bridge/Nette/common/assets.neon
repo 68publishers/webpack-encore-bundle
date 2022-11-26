@@ -1,0 +1,25 @@
+services:
+	packages: Symfony\Component\Asset\Packages(
+		defaultPackage: @packages.package.default
+		packages: [second: @packages.package.second]
+	)
+
+	packages.package.default:
+		autowired: no
+		factory: Symfony\Component\Asset\PathPackage(
+			basePath: %commonDir%/public
+			versionStrategy: Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy(
+				manifestPath: %commonDir%/public/manifest.json
+				strictMode: yes
+			)
+		)
+
+	packages.package.second:
+		autowired: no
+		factory: Symfony\Component\Asset\PathPackage(
+			basePath: %commonDir%/public/second_build
+			versionStrategy: Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy(
+				manifestPath: %commonDir%/public/second_build/manifest.json
+				strictMode: yes
+			)
+		)

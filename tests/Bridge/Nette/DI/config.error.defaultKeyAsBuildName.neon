@@ -1,0 +1,9 @@
+includes:
+	- ../common/assets.neon
+
+extensions:
+	encore: SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\DI\WebpackEncoreBundleExtension
+
+encore:
+	builds:
+		_default: %commonDir%/public
