@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SixtyEightPublishers\Asset\Tests\Bridge\Nette\Application;
+namespace SixtyEightPublishers\WebpackEncoreBundle\Tests\Bridge\Nette\Application;
 
 use Tester\Assert;
 use Tester\TestCase;

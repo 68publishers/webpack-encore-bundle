@@ -1,0 +1,6 @@
+includes:
+	- config.base.neon
+
+encore:
+	preload: yes
+	crossorigin: use-credentials

@@ -38,7 +38,7 @@ final class EncoreCssNode extends StatementNode
 	public function print(PrintContext $context): string
 	{
 		return $context->format(
-			'echo %modify($this->global->webpackEncoreTagRenderer->renderLinkTags(%node, %args)) %line;',
+			'echo $this->global->webpackEncoreTagRenderer->renderLinkTags(%node, %args) %line;',
 			$this->entryName,
 			$this->otherArguments,
 			$this->position,

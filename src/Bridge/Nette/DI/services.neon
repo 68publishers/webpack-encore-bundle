@@ -23,7 +23,7 @@ services:
 	entrypoint_lookup_collection:
 		autowired: SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface
 		type: SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface
-		factory: @entrypoint_lookup_collection.default
+		factory: @extension.entrypoint_lookup_collection.default
 
 	entrypoint_lookup_collection.default:
 		autowired: no
