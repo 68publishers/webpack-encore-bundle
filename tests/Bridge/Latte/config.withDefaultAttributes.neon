@@ -1,0 +1,9 @@
+includes:
+	- config.neon
+
+encore:
+	crossorigin: anonymous
+	script_attributes:
+		referrerpolicy: same-origin
+	link_attributes:
+		hreflang: en

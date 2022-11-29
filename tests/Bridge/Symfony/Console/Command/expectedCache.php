@@ -7,7 +7,7 @@ declare(strict_types=1);
 return [[
 
 '_default' => 0,
-'other_build' => 1,
+'second_build' => 1,
 
 ], [
 
@@ -38,7 +38,7 @@ return [[
 ],
 1 => [
 	'entrypoints' => [
-		'other_entry' => [
+		'my_entry' => [
 			'js' => [
 				'file1.js',
 				'file2.js',

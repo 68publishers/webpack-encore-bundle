@@ -1,5 +1,5 @@
 includes:
-	- ../common/assets.neon
+	- ../../common/assets.neon
 
 extensions:
 	encore: SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\DI\WebpackEncoreBundleExtension

@@ -71,8 +71,8 @@ final class WebpackEncoreBundleExtensionTest extends TestCase
 		Assert::type(EntryPointLookupCollection::class, $entryPointLookupCollection);
 
 		$this->assertEntryPointCollection($entryPointLookupCollection, [
-			'_default' => [__DIR__ . '/../common/public/entrypoints.json', FALSE, '_default', TRUE],
-			'second' => [__DIR__ . '/../common/public/second_build/entrypoints.json', FALSE, 'second', TRUE],
+			'_default' => [__DIR__ . '/../../common/public/entrypoints.json', FALSE, '_default', TRUE],
+			'second' => [__DIR__ . '/../../common/public/second_build/entrypoints.json', FALSE, 'second', TRUE],
 		]);
 	}
 
@@ -85,8 +85,8 @@ final class WebpackEncoreBundleExtensionTest extends TestCase
 		Assert::type(EntryPointLookupCollection::class, $entryPointLookupCollection);
 
 		$this->assertEntryPointCollection($entryPointLookupCollection, [
-			'_default' => [__DIR__ . '/../common/public/entrypoints.json', TRUE, '_default', TRUE],
-			'second' => [__DIR__ . '/../common/public/second_build/entrypoints.json', TRUE, 'second', TRUE],
+			'_default' => [__DIR__ . '/../../common/public/entrypoints.json', TRUE, '_default', TRUE],
+			'second' => [__DIR__ . '/../../common/public/second_build/entrypoints.json', TRUE, 'second', TRUE],
 		]);
 	}
 
@@ -99,8 +99,8 @@ final class WebpackEncoreBundleExtensionTest extends TestCase
 		Assert::type(EntryPointLookupCollection::class, $entryPointLookupCollection);
 
 		$this->assertEntryPointCollection($entryPointLookupCollection, [
-			'_default' => [__DIR__ . '/../common/public/entrypoints.json', FALSE, '_default', FALSE],
-			'second' => [__DIR__ . '/../common/public/second_build/entrypoints.json', FALSE, 'second', FALSE],
+			'_default' => [__DIR__ . '/../../common/public/entrypoints.json', FALSE, '_default', FALSE],
+			'second' => [__DIR__ . '/../../common/public/second_build/entrypoints.json', FALSE, 'second', FALSE],
 		]);
 	}
 
