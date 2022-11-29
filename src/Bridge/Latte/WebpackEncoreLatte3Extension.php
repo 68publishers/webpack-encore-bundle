@@ -6,8 +6,8 @@ namespace SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte;
 
 use Latte\Extension;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\TagRenderer;
-use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte\Nodes\EncoreJsNode;
-use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte\Nodes\EncoreCssNode;
+use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte\Node\EncoreJsNode;
+use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte\Node\EncoreCssNode;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface;
 
 final class WebpackEncoreLatte3Extension extends Extension

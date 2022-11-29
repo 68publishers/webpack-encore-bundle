@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte\Nodes;
+namespace SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte\Node;
 
 use Generator;
 use Latte\Compiler\Tag;
@@ -12,9 +12,9 @@ use Latte\Compiler\Nodes\Php\ExpressionNode;
 use Latte\Compiler\Nodes\Php\Expression\ArrayNode;
 
 /**
- * {encore_css, entryName, ...}
+ * {encore_js, entryName, ...}
  */
-final class EncoreCssNode extends StatementNode
+final class EncoreJsNode extends StatementNode
 {
 	public ExpressionNode $entryName;
 
@@ -38,7 +38,7 @@ final class EncoreCssNode extends StatementNode
 	public function print(PrintContext $context): string
 	{
 		return $context->format(
-			'echo $this->global->webpackEncoreTagRenderer->renderLinkTags(%node, %args) %line;',
+			'echo $this->global->webpackEncoreTagRenderer->renderScriptTags(%node, %args?) %line;',
 			$this->entryName,
 			$this->otherArguments,
 			$this->position,
