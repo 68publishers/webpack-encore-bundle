@@ -106,12 +106,11 @@ final class TagRenderer
 		$linkTags = [];
 
 		foreach ($entryPointLookup->getCssFiles($entryName) as $filename) {
-			$attributes = ['href' => $this->packages->getUrl($filename, $packageName)];
+			$attributes = [
+				'rel' => 'stylesheet',
+				'href' => $this->packages->getUrl($filename, $packageName),
+			];
 			$attributes += $defaultAttributes;
-
-			if (!isset($attributes['rel'])) {
-				$attributes['rel'] = 'stylesheet';
-			}
 
 			if (isset($integrityHashes[$filename])) {
 				$attributes['integrity'] = $integrityHashes[$filename];

@@ -34,7 +34,7 @@ final class ContainerFactory
 
 		$configurator->addParameters([
 			'cwd' => dirname($backtrace[0]['file']),
-			'commonDir' => __DIR__ . '/../common',
+			'commonDir' => __DIR__ . '/../../common',
 		]);
 
 		foreach ((array) $configFiles as $configFile) {

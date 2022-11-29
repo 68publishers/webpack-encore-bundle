@@ -19,8 +19,8 @@ final class WarmupCacheCommandTest extends TestCase
 		$cacheFile = sys_get_temp_dir() . '/' . uniqid('68publishers:AssetExtensionTest', TRUE) . '/entrypoints-cache.php';
 
 		$command = new WarmupCacheCommand([
-			'_default' => __DIR__ . '/entrypoints.default.json',
-			'other_build' => __DIR__ . '/entrypoints.otherBuild.json',
+			'_default' => __DIR__ . '/../../../common/public/entrypoints.json',
+			'second_build' => __DIR__ . '/../../../common/public/second_build/entrypoints.json',
 		], $cacheFile);
 
 		$application = new Application();
@@ -34,10 +34,14 @@ final class WarmupCacheCommandTest extends TestCase
 
 		Assert::true(file_exists($cacheFile));
 
-		$output = include $cacheFile;
-		$expected = include __DIR__ . '/expectedCache.php';
+		try {
+			$output = include $cacheFile;
+			$expected = include __DIR__ . '/expectedCache.php';
 
-		Assert::same($expected, $output);
+			Assert::same($expected, $output);
+		} finally {
+			unlink($cacheFile);
+		}
 	}
 }
 
