@@ -18,6 +18,12 @@ call_user_func(Closure::bind(static function () use ($loader) {
 			$loader->missingClasses[$className] = TRUE;
 		}
 	}
+
+	$psr4Dir = $needle . '\\';
+
+	if (isset($loader->prefixDirsPsr4[$psr4Dir])) {
+		unset($loader->prefixDirsPsr4[$psr4Dir]);
+	}
 }, NULL, ClassLoader::class));
 
 return $loader;

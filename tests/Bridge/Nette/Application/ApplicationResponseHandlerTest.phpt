@@ -9,6 +9,10 @@ use Tester\Assert;
 use Tester\TestCase;
 use Nette\Application\Application;
 use Nette\Http\IResponse as HttpResponse;
+use Nette\Bridges\ApplicationLatte\Template;
+use Nette\Application\Responses\JsonResponse;
+use Nette\Application\Responses\TextResponse;
+use Nette\Application\Response as ApplicationResponse;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\TagRenderer;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupInterface;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface;
@@ -31,19 +35,43 @@ final class ApplicationResponseHandlerTest extends TestCase
 		Assert::type(ApplicationResponseHandler::class, $application->onResponse[0]);
 	}
 
-	public function testInvokingHandlerWithoutPreviousHeader(): void
+	public function testInvokingHandlerOnTextResponseWithoutPreviousHeader(): void
 	{
 		$this->assertInvokingHandler(
 			NULL,
-			'<http://localhost:8080/build/file1.js>; rel="preload"; as="script",<http://localhost:8080/build/file2.js>; rel="preload"; as="script",<http://localhost:8080/build/file1.css>; rel="preload"; as="style",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"'
+			'<http://localhost:8080/build/file1.js>; rel="preload"; as="script",<http://localhost:8080/build/file2.js>; rel="preload"; as="script",<http://localhost:8080/build/file1.css>; rel="preload"; as="style",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"',
+			NULL,
+			$this->createTextApplicationResponse()
 		);
 	}
 
-	public function testInvokingHandlerWithPreviousHeaderAndCrossOrigin(): void
+	public function testInvokingHandlerOnJsonResponseWithoutPreviousHeader(): void
+	{
+		$this->assertInvokingHandler(
+			NULL,
+			'<http://localhost:8080/build/file1.js>; rel="preload"; as="script",<http://localhost:8080/build/file2.js>; rel="preload"; as="script",<http://localhost:8080/build/file1.css>; rel="preload"; as="style",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"',
+			NULL,
+			new JsonResponse(['status' => 'ok'])
+		);
+	}
+
+	public function testInvokingHandlerOnTextResponseWithPreviousHeaderAndCrossOrigin(): void
 	{
 		$this->assertInvokingHandler(
 			'<http://localhost:8080/static.js>; rel="preload"; as="script",<http://localhost:8080/static.css>; rel="preload"; as="style"',
-			'<http://localhost:8080/static.js>; rel="preload"; as="script",<http://localhost:8080/static.css>; rel="preload"; as="style",<http://localhost:8080/build/file1.js>; rel="preload"; as="script",<http://localhost:8080/build/file2.js>; rel="preload"; as="script",<http://localhost:8080/build/file1.css>; rel="preload"; as="style",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"'
+			'<http://localhost:8080/static.js>; rel="preload"; as="script",<http://localhost:8080/static.css>; rel="preload"; as="style",<http://localhost:8080/build/file1.js>; rel="preload"; as="script"; crossorigin="anonymous",<http://localhost:8080/build/file2.js>; rel="preload"; as="script"; crossorigin="anonymous",<http://localhost:8080/build/file1.css>; rel="preload"; as="style"; crossorigin="anonymous",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"; crossorigin="anonymous"',
+			'anonymous',
+			$this->createTextApplicationResponse()
+		);
+	}
+
+	public function testInvokingHandlerOnJsonResponseWithPreviousHeader(): void
+	{
+		$this->assertInvokingHandler(
+			'<http://localhost:8080/static.js>; rel="preload"; as="script",<http://localhost:8080/static.css>; rel="preload"; as="style"',
+			'<http://localhost:8080/static.js>; rel="preload"; as="script",<http://localhost:8080/static.css>; rel="preload"; as="style",<http://localhost:8080/build/file1.js>; rel="preload"; as="script",<http://localhost:8080/build/file2.js>; rel="preload"; as="script",<http://localhost:8080/build/file1.css>; rel="preload"; as="style",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"',
+			NULL,
+			new JsonResponse(['status' => 'ok'])
 		);
 	}
 
@@ -52,7 +80,7 @@ final class ApplicationResponseHandlerTest extends TestCase
 		Mockery::close();
 	}
 
-	private function assertInvokingHandler(?string $previousHeader, string $expectedHeader, ?string $crossOrigin = NULL): void
+	private function assertInvokingHandler(?string $previousHeader, string $expectedHeader, ?string $crossOrigin, ApplicationResponse $applicationResponse): void
 	{
 		$entrypointLookup1 = Mockery::mock(EntryPointLookupInterface::class);
 		$entrypointLookup2 = Mockery::mock(EntryPointLookupInterface::class);
@@ -97,7 +125,18 @@ final class ApplicationResponseHandlerTest extends TestCase
 
 		$handler = new ApplicationResponseHandler($response, $tagRenderer, $entrypointCollection, ['_default', 'other_build']);
 
-		$handler();
+		$handler(Mockery::mock(Application::class), $applicationResponse);
+	}
+
+	private function createTextApplicationResponse(): ApplicationResponse
+	{
+		$template = Mockery::mock(Template::class);
+
+		$template->shouldReceive('render')
+			->once()
+			->andReturnUndefined();
+
+		return new TextResponse($template);
 	}
 }
 
