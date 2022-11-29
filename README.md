@@ -179,19 +179,19 @@ use SixtyEightPublishers\WebpackEncoreBundle\Event\RenderAssetTagEvent;
 
 final class ScriptNonceSubscriber implements EventSubscriberInterface
 {
-	    public static function getSubscribedEvents()
-	    {
-	    	    return [
-	    	    	    RenderAssetTagEvent::class => 'onRenderAssetTag',
-	    	    ];
-	    }
+    public static function getSubscribedEvents()
+    {
+        return [
+            RenderAssetTagEvent::class => 'onRenderAssetTag',
+        ];
+    }
 
-	    public function onRenderAssetTag(RenderAssetTagEvent $event): void
-	    {
-	    	    if ($event->isScriptTag()) {
-	    	    	    $event->setAttribute('nonce', 'lookup nonce');
-	    	    }
-	    }
+    public function onRenderAssetTag(RenderAssetTagEvent $event): void
+    {
+        if ($event->isScriptTag()) {
+            $event->setAttribute('nonce', 'lookup nonce');
+        }
+    }
 }
 ```
 
