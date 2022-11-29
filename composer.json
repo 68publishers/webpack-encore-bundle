@@ -23,6 +23,7 @@
 		"mockery/mockery": "^1.5",
 		"nette/application": "^3.1.0",
 		"nette/bootstrap": "^3.1",
+		"nette/component-model": "^3.0.2",
 		"nette/tester": "^2.4.3",
 		"phpstan/phpstan": "^1.9",
 		"phpstan/phpstan-nette": "^1.1",

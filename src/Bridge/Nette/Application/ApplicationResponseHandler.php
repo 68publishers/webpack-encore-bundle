@@ -4,10 +4,17 @@ declare(strict_types=1);
 
 namespace SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\Application;
 
+use Throwable;
+use ReflectionClass;
+use Nette\Utils\Helpers;
 use Nette\Application\Application;
+use Nette\Application\UI\Template;
 use Nette\Http\IResponse as HttpResponse;
+use Nette\Application\Responses\TextResponse;
+use Nette\Application\Response as ApplicationResponse;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\TagRenderer;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface;
+use function assert;
 use function explode;
 use function implode;
 use function sprintf;
@@ -44,7 +51,31 @@ final class ApplicationResponseHandler
 		$application->onResponse[] = new self($response, $tagRenderer, $entryPointLookupCollection, $buildNames);
 	}
 
-	public function __invoke(): void
+	/**
+	 * @throws Throwable
+	 */
+	public function __invoke(Application $application, ApplicationResponse $response): void
+	{
+		if (!$response instanceof TextResponse || !$response->getSource() instanceof Template) {
+			$this->processLinks();
+
+			return;
+		}
+
+		$source = $response->getSource();
+		assert($source instanceof Template);
+		$rendered = Helpers::capture(static fn () => $source->render());
+
+		$reflection = new ReflectionClass($response);
+		$property = $reflection->getProperty('source');
+
+		$property->setAccessible(TRUE);
+		$property->setValue($response, $rendered);
+
+		$this->processLinks();
+	}
+
+	private function processLinks(): void
 	{
 		$defaultAttributes = $this->tagRenderer->getDefaultAttributes();
 		$crossOrigin = $defaultAttributes['crossorigin'] ?? NULL;
