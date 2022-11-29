@@ -1,6 +1,6 @@
 <h1 align="center">Nette integration with Webpack Encore</h1>
 
-<p align="center">This package allows you to use the `splitEntryChunks()` feature from <a href="https://symfony.com/doc/current/frontend.html">Webpack Encore</a> by reading an `entrypoints.json` file and helping you render all of the dynamic `script` and `link` tags needed.</p>
+<p align="center">This package allows you to use the <code>splitEntryChunks()</code> feature from <a href="https://symfony.com/doc/current/frontend.html">Webpack Encore</a> by reading an <code>entrypoints.json</code> file and helping you render all of the dynamic <code>script</code> and <code>link</code> tags needed.</p>
 <p align="center">Inspired by <a href="https://github.com/symfony/webpack-encore-bundle">symfony/webpack-encore-bundle</a></p>
 
 <p align="center">
