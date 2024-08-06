@@ -16,7 +16,7 @@ Environment::bypassFinals();
 date_default_timezone_set('Europe/Prague');
 
 if (PHP_VERSION_ID < 80000) {
-    error_reporting(~E_USER_DEPRECATED);
+	error_reporting(~E_USER_DEPRECATED);
 }
 
 if (PHP_VERSION_ID >= 80200) {

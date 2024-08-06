@@ -62,7 +62,7 @@ final class WebpackEncoreBundleExtension extends CompilerExtension
 				'string'
 			),
 		])->castTo(WebpackEncoreConfig::class)
-            ->assert(static fn (object $config): bool => !(!isset($config->output_path) && empty($config->builds)), 'No build is defined.');
+			->assert(static fn (object $config): bool => !(!isset($config->output_path) && empty($config->builds)), 'No build is defined.');
 	}
 
 	/**
