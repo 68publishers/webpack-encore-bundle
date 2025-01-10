@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Cache\Adapter\PhpArrayAdapter;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,10 +20,12 @@ use function array_map;
 use function file_exists;
 use function unserialize;
 
+#[AsCommand(
+	name: 'encore:warmup-cache',
+	description: 'Dumps entrypoints data into PHP file for faster loading in production environment.',
+)]
 final class WarmupCacheCommand extends Command
 {
-	protected static $defaultName = 'encore:warmup-cache';
-
 	/** @var array<string, string> */
 	private array $cacheKeys;
 
@@ -37,11 +40,6 @@ final class WarmupCacheCommand extends Command
 
 		$this->cacheKeys = $cacheKeys;
 		$this->cacheFile = $cacheFile;
-	}
-
-	protected function configure(): void
-	{
-		$this->setDescription('Dumps entrypoints data into PHP file for faster loading in production environment.');
 	}
 
 	/**

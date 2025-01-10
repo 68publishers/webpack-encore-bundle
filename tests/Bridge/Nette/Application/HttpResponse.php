@@ -8,6 +8,14 @@ use Nette\Http\IResponse;
 
 final class HttpResponse implements IResponse
 {
+	public string $cookieDomain = '';
+
+	public string $cookiePath = '/';
+
+	public bool $cookieSecure = FALSE;
+
+	public bool $warnOnBuffer = TRUE;
+
 	private int $code = self::S200_OK;
 
 	private array $headers = [];

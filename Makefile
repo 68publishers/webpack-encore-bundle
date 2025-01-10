@@ -16,26 +16,23 @@ restart:
 	make start
 
 tests.all:
-	PHP=74 make tests.run
-	PHP=80 make tests.run
-	PHP=81 make tests.run
-	PHP=82 make tests.run
+	PHP=83 make tests.run
 
 cs.fix:
-	PHP=81 make composer.update
-	docker exec 68publishers.webpack-encore-bundle.81 vendor/bin/php-cs-fixer fix -v
+	PHP=83 make composer.update
+	docker exec 68publishers.webpack-encore-bundle.83 vendor/bin/php-cs-fixer fix -v
 
 cs.check:
-	PHP=81 make composer.update
-	docker exec 68publishers.webpack-encore-bundle.81 vendor/bin/php-cs-fixer fix -v --dry-run
+	PHP=83 make composer.update
+	docker exec 68publishers.webpack-encore-bundle.83 vendor/bin/php-cs-fixer fix -v --dry-run
 
 stan:
-	PHP=81 make composer.update
-	docker exec 68publishers.webpack-encore-bundle.81 vendor/bin/phpstan analyse --level 6 src
+	PHP=83 make composer.update
+	docker exec 68publishers.webpack-encore-bundle.83 vendor/bin/phpstan analyse --level 6 src
 
 coverage:
-	PHP=81 make composer.update
-	docker exec 68publishers.webpack-encore-bundle.81 vendor/bin/tester -p phpdbg -C -s --coverage ./coverage.xml --coverage-src ./src ./tests
+	PHP=83 make composer.update
+	docker exec 68publishers.webpack-encore-bundle.83 vendor/bin/tester -p phpdbg -C -s --coverage ./coverage.xml --coverage-src ./src ./tests
 
 composer.update:
 ifndef PHP
