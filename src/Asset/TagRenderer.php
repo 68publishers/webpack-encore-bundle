@@ -98,7 +98,7 @@ final class TagRenderer
 	 *
 	 * @throws Throwable|\Psr\Cache\InvalidArgumentException
 	 */
-	public function renderLinkTags(string $entryName, string $packageName = NULL, string $entrypointName = NULL, array $extraAttributes = []): string
+	public function renderLinkTags(string $entryName, ?string $packageName = NULL, ?string $entrypointName = NULL, array $extraAttributes = []): string
 	{
 		$entryPointLookup = $this->entrypointLookupCollection->getEntrypointLookup($entrypointName);
 		$integrityHashes = $entryPointLookup instanceof IntegrityDataProviderInterface ? $entryPointLookup->getIntegrityData() : [];
