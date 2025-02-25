@@ -8,8 +8,8 @@ use SixtyEightPublishers\WebpackEncoreBundle\Exception\UndefinedBuildException;
 
 interface EntryPointLookupCollectionInterface
 {
-	/**
-	 * @throws UndefinedBuildException
-	 */
-	public function getEntrypointLookup(?string $buildName = NULL): EntryPointLookupInterface;
+    /**
+     * @throws UndefinedBuildException
+     */
+    public function getEntrypointLookup(?string $buildName = null): EntryPointLookupInterface;
 }
