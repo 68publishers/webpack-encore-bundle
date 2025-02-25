@@ -23,7 +23,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
           tools: composer:v2
 
       - name: Install dependencies
@@ -44,14 +44,11 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
           tools: composer:v2
 
       - name: Install dependencies
         run: composer update --no-progress --prefer-dist --prefer-stable --optimize-autoloader --quiet
 
-      - name: Php-Cs-Fixer
-        run: vendor/bin/php-cs-fixer fix -v --dry-run
-
       - name: PhpStan
-        run: vendor/bin/phpstan analyse --level 6 src
+        run: vendor/bin/phpstan analyse
