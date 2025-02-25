@@ -20,8 +20,8 @@ tests.all:
 	PHP=84 make tests.run
 
 cs.fix:
-	PHP=84 make composer.update
-	docker exec 68publishers.webpack-encore-bundle.84 vendor/bin/php-cs-fixer fix -v
+	PHP=83 make composer.update
+	docker exec 68publishers.webpack-encore-bundle.83 vendor/bin/php-cs-fixer fix -v
 
 cs.check:
 	PHP=84 make composer.update
