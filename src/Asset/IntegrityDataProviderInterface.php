@@ -6,8 +6,8 @@ namespace SixtyEightPublishers\WebpackEncoreBundle\Asset;
 
 interface IntegrityDataProviderInterface
 {
-	/**
-	 * @return array<string>
-	 */
-	public function getIntegrityData(): array;
+    /**
+     * @return array<string, string>
+     */
+    public function getIntegrityData(): array;
 }

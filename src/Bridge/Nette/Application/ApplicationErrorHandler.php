@@ -9,32 +9,32 @@ use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInt
 
 final class ApplicationErrorHandler
 {
-	private EntryPointLookupCollectionInterface $entrypointLookupCollection;
+    private EntryPointLookupCollectionInterface $entrypointLookupCollection;
 
-	/** @var array<string> */
-	private array $buildNames;
+    /** @var list<string> */
+    private array $buildNames;
 
-	/**
-	 * @param array<string> $buildNames
-	 */
-	public function __construct(EntryPointLookupCollectionInterface $entrypointLookupCollection, array $buildNames)
-	{
-		$this->entrypointLookupCollection = $entrypointLookupCollection;
-		$this->buildNames = $buildNames;
-	}
+    /**
+     * @param list<string> $buildNames
+     */
+    public function __construct(EntryPointLookupCollectionInterface $entrypointLookupCollection, array $buildNames)
+    {
+        $this->entrypointLookupCollection = $entrypointLookupCollection;
+        $this->buildNames = $buildNames;
+    }
 
-	/**
-	 * @param array<string> $buildNames
-	 */
-	public static function register(Application $application, EntryPointLookupCollectionInterface $entrypointLookupCollection, array $buildNames): void
-	{
-		$application->onError[] = new self($entrypointLookupCollection, $buildNames);
-	}
+    /**
+     * @param list<string> $buildNames
+     */
+    public static function register(Application $application, EntryPointLookupCollectionInterface $entrypointLookupCollection, array $buildNames): void
+    {
+        $application->onError[] = new self($entrypointLookupCollection, $buildNames);
+    }
 
-	public function __invoke(): void
-	{
-		foreach ($this->buildNames as $buildName) {
-			$this->entrypointLookupCollection->getEntrypointLookup($buildName)->reset();
-		}
-	}
+    public function __invoke(): void
+    {
+        foreach ($this->buildNames as $buildName) {
+            $this->entrypointLookupCollection->getEntrypointLookup($buildName)->reset();
+        }
+    }
 }

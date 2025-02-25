@@ -2,29 +2,29 @@ services:
 	# cache
 	cache:
 		autowired: no
-		factory: @extension.cache.default
+		create: @extension.cache.default
 
 	cache.default:
 		autowired: no
-		factory: Symfony\Component\Cache\Adapter\PhpArrayAdapter::create(
+		create: Symfony\Component\Cache\Adapter\PhpArrayAdapter::create(
 			fallbackPool: @extension.cache.fallback
 		)
 
 	cache.fallback:
 		autowired: no
-		factory: Symfony\Component\Cache\Adapter\NullAdapter
+		create: Symfony\Component\Cache\Adapter\NullAdapter
 
 	# renderer
 	tag_renderer:
 		autowired: no
-		factory: SixtyEightPublishers\WebpackEncoreBundle\Asset\TagRenderer
+		create: SixtyEightPublishers\WebpackEncoreBundle\Asset\TagRenderer
 
 	# entrypoints
 	entrypoint_lookup_collection:
 		autowired: SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface
 		type: SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface
-		factory: @extension.entrypoint_lookup_collection.default
+		create: @extension.entrypoint_lookup_collection.default
 
 	entrypoint_lookup_collection.default:
 		autowired: no
-		factory: SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollection
+		create: SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollection
