@@ -7,3 +7,12 @@ services:
         container_name: 68publishers.webpack-encore-bundle.83
         volumes:
             - .:/var/www/html:cached
+
+    php84:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: php84
+        container_name: 68publishers.webpack-encore-bundle.84
+        volumes:
+            - .:/var/www/html:cached
