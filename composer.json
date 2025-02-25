@@ -15,21 +15,26 @@
 		"latte/latte": "^3.0",
 		"nette/di": "^3.2",
 		"nette/utils": "^4.0",
-		"symfony/asset": "^7.0",
-		"symfony/cache": "^7.0"
+		"symfony/asset": "^7.0.3",
+		"symfony/cache": "^7.0.3"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.13",
-		"mockery/mockery": "^1.5",
+		"mockery/mockery": "^1.6.12",
 		"nette/application": "^3.1.0",
 		"nette/bootstrap": "^3.1",
 		"nette/component-model": "^3.0.2",
+		"nette/neon": "^3.4.4",
 		"nette/tester": "^2.4.3",
 		"phpstan/phpstan": "^1.9",
 		"phpstan/phpstan-nette": "^1.1",
 		"roave/security-advisories": "dev-latest",
-		"symfony/console": "^7.0",
-		"symfony/event-dispatcher": "^7.0"
+		"symfony/cache-contracts": "^2.5.3",
+		"symfony/console": "^7.0.3",
+		"symfony/event-dispatcher": "^7.0.3",
+		"symfony/event-dispatcher-contracts": "^2.5.3",
+		"symfony/string": "^7.0.3",
+		"symfony/var-exporter": "^7.0.3"
 	},
 	"conflict": {
 		"nette/schema": "<1.2.0"

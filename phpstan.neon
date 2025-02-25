@@ -3,12 +3,6 @@ includes:
 	- vendor/phpstan/phpstan-nette/rules.neon
 
 parameters:
-	ignoreErrors:
-		-
-			message: '~If condition is always false\.~'
-			path: src/Bridge/Nette/DI/WebpackEncoreBundleExtension.php
-
-	excludePaths:
-		analyse:
-			- src/Bridge/Latte/WebpackEncoreMacroSet.php
-			- src/Bridge/Latte/WebpackEncoreLatte2Extension.php
+    level: 8
+    paths:
+        - src
