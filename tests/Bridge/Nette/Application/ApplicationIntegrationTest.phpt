@@ -27,13 +27,27 @@ final class ApplicationIntegrationTest extends TestCase
         Assert::null($response->getHeader('Link'));
     }
 
-    public function testHeadersShouldNotBeSentWithDeprecatedPreloadOptionEnabled(): void
+    /**
+     * @return list<array{string}>
+     */
+    public function getDeprecatedPreloadConfigs(): array
+    {
+        return [
+            [__DIR__ . '/config.preloadWithCrossOrigin.neon'],
+            [__DIR__ . '/config.preloadDisabled.neon'],
+        ];
+    }
+
+    /**
+     * @dataProvider getDeprecatedPreloadConfigs
+     */
+    public function testHeadersShouldNotBeSentWithDeprecatedPreloadOption(string $config): void
     {
         $container = null;
 
         Assert::error(
-            static function () use (&$container): void {
-                $container = ContainerFactory::create(__DIR__ . '/config.preloadWithCrossOrigin.neon');
+            static function () use (&$container, $config): void {
+                $container = ContainerFactory::create($config);
             },
             E_USER_DEPRECATED,
             'The option %a%preload%a% is deprecated since 68publishers/webpack-encore-bundle 3.4.0 and has no effect, the Link preload header is no longer sent. The option will be removed in 4.0, remove it from your configuration.',
