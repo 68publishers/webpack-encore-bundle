@@ -56,6 +56,9 @@ endif
 	PHP=$(PHP) make composer.update
 	@echo "========== Running tests with PHP $(PHP) ==========" >&2
 	docker exec 68publishers.webpack-encore-bundle.$(PHP) vendor/bin/tester -C -s ./tests
+# the lowest third-party versions predate PHP 8.4 and 8.5, the lowest dependencies are tested on the minimal PHP
+ifeq ($(PHP),83)
 	PHP=$(PHP) make composer.update-lowest
 	@echo "========== Running tests with PHP $(PHP) (prefer lowest dependencies) ==========" >&2
 	docker exec 68publishers.webpack-encore-bundle.$(PHP) vendor/bin/tester -C -s ./tests
+endif

@@ -10,14 +10,18 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Install PHP

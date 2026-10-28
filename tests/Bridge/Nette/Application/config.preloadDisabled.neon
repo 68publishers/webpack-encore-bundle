@@ -2,4 +2,4 @@ includes:
 	- config.base.neon
 
 encore:
-	preload: yes
+	preload: no

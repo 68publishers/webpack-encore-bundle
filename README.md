@@ -61,7 +61,7 @@ encore:
 
 ```neon
 encore:
-	# if using Encore.enableIntegrityHashes() and need the crossorigin attribute. Allowed values are NULL, 'anonymous' or 'use-credentials'. Default is NULL.
+	# if using Encore.enableIntegrityHashes() and need the crossorigin attribute. Allowed values are false, 'anonymous' or 'use-credentials'. Default is false.
 	crossorigin: anonymous
 
 	# Set attributes that will be rendered on all script tags
@@ -74,14 +74,11 @@ encore:
 		referrerpolicy: origin
 ```
 
-### HTTP Preload
+### HTTP Preload (deprecated)
 
-All scripts and styles will be preloaded via [HTTP2 header `Link`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link) if the option is enabled.
+:warning: The option `preload` is deprecated since 3.4.0 and has no effect. The `Link` preload header is no longer sent and the option triggers `E_USER_DEPRECATED` (a deprecation of the configuration schema) while the container is being compiled, whatever its value. The option will be removed in 4.0, remove it from your configuration.
 
-```neon
-encore:
-	preload: yes
-```
+The header could only be sent after the whole template had been rendered, so it reached the browser together with the HTML and brought no benefit (HTTP/2 Server Push is no longer supported by browsers). If you need to preload a late-discovered file (e.g. a font referenced from CSS), add `<link rel="preload">` to your layout manually.
 
 ### Entrypoints.json cache
 
@@ -99,7 +96,7 @@ To generate the cache, run the following command:
 $ bin/console encore:warmup-cache
 ```
 
-The cache file will be generated as `%wwwDir%//cache/webpack_encore.cache.php`.
+The cache file will be generated as `%tempDir%/cache/webpack_encore.cache.php`.
 
 :exclamation: Cache must be regenerated when the entrypoints.json changes. Use the option in a production environment only and run the command within an application build.
 
@@ -179,7 +176,7 @@ use SixtyEightPublishers\WebpackEncoreBundle\Event\RenderAssetTagEvent;
 
 final class ScriptNonceSubscriber implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RenderAssetTagEvent::class => 'onRenderAssetTag',

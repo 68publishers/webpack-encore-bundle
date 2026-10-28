@@ -10,6 +10,7 @@ final class WebpackEncoreConfig
 
     public string|false $crossorigin;
 
+    /** @deprecated since 3.4.0, has no effect, will be removed in 4.0 */
     public bool $preload;
 
     public bool $cache;

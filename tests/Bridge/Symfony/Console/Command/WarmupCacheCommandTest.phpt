@@ -25,7 +25,7 @@ final class WarmupCacheCommandTest extends TestCase
 
         $application = new Application();
 
-        $application->add($command);
+        method_exists($application, 'addCommand') ? $application->addCommand($command) : $application->add($command);
 
         $command = $application->find('encore:warmup-cache');
         $tester = new CommandTester($command);

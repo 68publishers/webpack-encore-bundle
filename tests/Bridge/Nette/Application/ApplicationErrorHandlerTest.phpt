@@ -25,6 +25,8 @@ final class ApplicationErrorHandlerTest extends TestCase
 
         Assert::count(1, $application->onError ?? []);
         Assert::type(ApplicationErrorHandler::class, $application->onError[0]);
+        Assert::count(1, $application->onShutdown ?? []);
+        Assert::same($application->onError[0], $application->onShutdown[0]);
     }
 
     public function testInvokingHandler(): void

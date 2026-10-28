@@ -21,6 +21,10 @@ use function implode;
 use function is_string;
 use function sprintf;
 
+/**
+ * @deprecated since 3.4.0, will be removed in 4.0. The extension no longer registers this handler.
+ *             It rewrites the readonly TextResponse::$source and fails with nette/application >= 3.2.10.
+ */
 final class ApplicationResponseHandler
 {
     private HttpResponse $response;
@@ -56,14 +60,14 @@ final class ApplicationResponseHandler
      */
     public function __invoke(Application $application, ApplicationResponse $response): void
     {
-        if (!$response instanceof TextResponse || !$response->getSource() instanceof Template) {
+        $source = $response instanceof TextResponse ? $response->getSource() : null;
+
+        if (!$source instanceof Template) {
             $this->processLinks();
 
             return;
         }
 
-        $source = $response->getSource();
-        assert($source instanceof Template);
         $rendered = Helpers::capture(static fn () => $source->render());
 
         $reflection = new ReflectionClass($response);

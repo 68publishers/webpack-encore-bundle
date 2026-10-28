@@ -9,7 +9,6 @@ use Latte\Loaders\StringLoader;
 use Nette\Bridges\ApplicationLatte\LatteFactory;
 use SixtyEightPublishers\WebpackEncoreBundle\Tests\Bridge\Nette\DI\ContainerFactory;
 use Tester\Assert;
-use Tester\CodeCoverage\Collector;
 use Tester\TestCase;
 
 require __DIR__ . '/../../bootstrap.php';
@@ -285,14 +284,6 @@ LATTE);
     private function assertNumberOfOccurrences(string $s, string $needle, int $number): void
     {
         Assert::same($number, substr_count($s, $needle));
-    }
-
-    protected function tearDown(): void
-    {
-        # save manually partial code coverage to free memory
-        if (Collector::isStarted()) {
-            Collector::save();
-        }
     }
 }
 

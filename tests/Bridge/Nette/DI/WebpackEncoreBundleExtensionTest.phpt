@@ -16,7 +16,6 @@ use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\Application\Applicatio
 use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\Application\ApplicationResponseHandler;
 use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Symfony\Console\Command\WarmupCacheCommand;
 use Tester\Assert;
-use Tester\CodeCoverage\Collector;
 use Tester\TestCase;
 use function array_filter;
 use function array_keys;
@@ -134,23 +133,24 @@ final class WebpackEncoreBundleExtensionTest extends TestCase
         Assert::count(0, $handlers);
     }
 
-    public function testApplicationResponseHandlerShouldBeRegisteredIfPreloadEnabled(): void
+    public function testDeprecatedPreloadOptionShouldTriggerDeprecationAndNotRegisterApplicationResponseHandler(): void
     {
-        $container = ContainerFactory::create(__DIR__ . '/config.preloadEnabled.neon');
+        $container = null;
+
+        Assert::error(
+            static function () use (&$container): void {
+                $container = ContainerFactory::create(__DIR__ . '/config.preloadEnabled.neon');
+            },
+            E_USER_DEPRECATED,
+            'The option %a%preload%a% is deprecated since 68publishers/webpack-encore-bundle 3.4.0 and has no effect, the Link preload header is no longer sent. The option will be removed in 4.0, remove it from your configuration.',
+        );
+
         $application = $container->getByType(Application::class, true);
         assert($application instanceof Application);
 
         $handlers = array_values(array_filter($application->onResponse ?? [], static fn ($callback): bool => $callback instanceof ApplicationResponseHandler));
 
-        Assert::count(1, $handlers);
-        Assert::type(ApplicationResponseHandler::class, $handlers[0]);
-
-        $handler = $handlers[0];
-        assert($handler instanceof ApplicationResponseHandler);
-
-        call_user_func(Closure::bind(static function () use ($handler) {
-            Assert::same(['_default', 'second'], $handler->buildNames);
-        }, null, ApplicationResponseHandler::class));
+        Assert::count(0, $handlers);
     }
 
     public function testConsoleCommandsShouldBeRegistered(): void
@@ -193,14 +193,6 @@ final class WebpackEncoreBundleExtensionTest extends TestCase
             Assert::same($cacheKey, $entryPointLookup->cacheKey);
             Assert::same($strictMode, $entryPointLookup->strictMode);
         }, null, EntryPointLookup::class));
-    }
-
-    protected function tearDown(): void
-    {
-        # save manually partial code coverage to free memory
-        if (Collector::isStarted()) {
-            Collector::save();
-        }
     }
 }
 
