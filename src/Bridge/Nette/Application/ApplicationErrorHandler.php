@@ -28,7 +28,11 @@ final class ApplicationErrorHandler
      */
     public static function register(Application $application, EntryPointLookupCollectionInterface $entrypointLookupCollection, array $buildNames): void
     {
-        $application->onError[] = new self($entrypointLookupCollection, $buildNames);
+        $handler = new self($entrypointLookupCollection, $buildNames);
+
+        # the error presenter renders the entries again, a long-running process renders them in the next request
+        $application->onError[] = $handler;
+        $application->onShutdown[] = $handler;
     }
 
     public function __invoke(): void

@@ -10,6 +10,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   coverage:
     name: Coverage
@@ -18,6 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Install PHP

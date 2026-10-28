@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The class `ApplicationResponseHandler` is deprecated and is no longer registered by the extension. It will be removed in 4.0.
 
 ### Fixed
+- The entrypoint lookups are reset when the application shuts down, not only after an error. Previously they were reset after a response only with `preload` enabled, so a long-running process did not render the tags of already rendered entries again.
 - Enabled `preload` no longer crashes applications with `nette/application` >= 3.2.10, where `TextResponse::$source` is readonly.
 - README: the default value of `crossorigin`, the path of the entrypoints cache file and the return type of `getSubscribedEvents()` in the example.
 

@@ -16,7 +16,6 @@ use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\Application\Applicatio
 use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\Application\ApplicationResponseHandler;
 use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Symfony\Console\Command\WarmupCacheCommand;
 use Tester\Assert;
-use Tester\CodeCoverage\Collector;
 use Tester\TestCase;
 use function array_filter;
 use function array_keys;
@@ -194,14 +193,6 @@ final class WebpackEncoreBundleExtensionTest extends TestCase
             Assert::same($cacheKey, $entryPointLookup->cacheKey);
             Assert::same($strictMode, $entryPointLookup->strictMode);
         }, null, EntryPointLookup::class));
-    }
-
-    protected function tearDown(): void
-    {
-        # save manually partial code coverage to free memory
-        if (Collector::isStarted()) {
-            Collector::save();
-        }
     }
 }
 

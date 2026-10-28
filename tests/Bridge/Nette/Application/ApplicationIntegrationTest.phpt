@@ -8,7 +8,6 @@ use Nette\Application\Application;
 use Nette\Http\IResponse;
 use SixtyEightPublishers\WebpackEncoreBundle\Tests\Bridge\Nette\DI\ContainerFactory;
 use Tester\Assert;
-use Tester\CodeCoverage\Collector;
 use Tester\TestCase;
 use function assert;
 
@@ -47,14 +46,6 @@ final class ApplicationIntegrationTest extends TestCase
         $application->run();
 
         Assert::null($response->getHeader('Link'));
-    }
-
-    protected function tearDown(): void
-    {
-        # save manually partial code coverage to free memory
-        if (Collector::isStarted()) {
-            Collector::save();
-        }
     }
 }
 
