@@ -13,14 +13,12 @@ use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Definitions\Reference;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\DI\Definitions\Statement;
-use Nette\Http\IResponse as HttpResponse;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 use RuntimeException;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookup;
 use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Latte\WebpackEncoreLatteExtension;
 use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\Application\ApplicationErrorHandler;
-use SixtyEightPublishers\WebpackEncoreBundle\Bridge\Nette\Application\ApplicationResponseHandler;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Console\Command\Command;
 use function array_key_exists;
@@ -42,7 +40,8 @@ final class WebpackEncoreBundleExtension extends CompilerExtension
         return Expect::structure([
             'output_path' => Expect::string()->nullable(),
             'crossorigin' => Expect::anyOf(false, 'anonymous', 'use-credentials')->default(false),
-            'preload' => Expect::bool(false),
+            'preload' => Expect::bool(false)
+                ->deprecated('The option %path% is deprecated since 68publishers/webpack-encore-bundle 3.4.0 and has no effect, the Link preload header is no longer sent. The option will be removed in 4.0, remove it from your configuration.'),
             'cache' => Expect::bool(false)
                 ->assert(static fn (bool $value) => !$value || class_exists(Command::class), 'You can\'t create cached entrypoints without symfony/console.'),
             'strict_mode' => Expect::bool(true),
@@ -116,11 +115,8 @@ final class WebpackEncoreBundleExtension extends CompilerExtension
             throw new RuntimeException('Symfony Asset component is not integrated with your application. Please use 68publishers/asset or another integration solution.');
         }
 
-        $config = $this->getConfig();
-        assert($config instanceof WebpackEncoreConfig);
-
         if ($this->compiler->getExtensions(ApplicationExtension::class)) {
-            $this->beforeCompileApplicationHandlers($this->buildNames, $config->preload);
+            $this->beforeCompileApplicationHandlers($this->buildNames);
         }
 
         $this->beforeCompileLatte();
@@ -129,7 +125,7 @@ final class WebpackEncoreBundleExtension extends CompilerExtension
     /**
      * @param list<string> $buildNames
      */
-    private function beforeCompileApplicationHandlers(array $buildNames, bool $preload): void
+    private function beforeCompileApplicationHandlers(array $buildNames): void
     {
         $applicationDefinition = $this->getContainerBuilder()->getDefinitionByType(Application::class);
         assert($applicationDefinition instanceof ServiceDefinition);
@@ -140,17 +136,6 @@ final class WebpackEncoreBundleExtension extends CompilerExtension
             new Reference($this->prefix('entrypoint_lookup_collection')),
             $buildNames,
         ]);
-
-        if ($preload) {
-            $applicationDefinition->addSetup('?::register(?, ?, ?, ?, ?)', [
-                ContainerBuilder::literal(ApplicationResponseHandler::class),
-                new Reference('self'),
-                new Reference(HttpResponse::class),
-                new Reference($this->prefix('tag_renderer')),
-                new Reference($this->prefix('entrypoint_lookup_collection')),
-                $buildNames,
-            ]);
-        }
     }
 
     private function beforeCompileLatte(): void

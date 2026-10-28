@@ -8,8 +8,6 @@ use Mockery;
 use Nette\Application\Application;
 use Nette\Application\Response as ApplicationResponse;
 use Nette\Application\Responses\JsonResponse;
-use Nette\Application\Responses\TextResponse;
-use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Http\IResponse as HttpResponse;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupCollectionInterface;
 use SixtyEightPublishers\WebpackEncoreBundle\Asset\EntryPointLookupInterface;
@@ -35,16 +33,6 @@ final class ApplicationResponseHandlerTest extends TestCase
         Assert::type(ApplicationResponseHandler::class, $application->onResponse[0]);
     }
 
-    public function testInvokingHandlerOnTextResponseWithoutPreviousHeader(): void
-    {
-        $this->assertInvokingHandler(
-            null,
-            '<http://localhost:8080/build/file1.js>; rel="preload"; as="script",<http://localhost:8080/build/file2.js>; rel="preload"; as="script",<http://localhost:8080/build/file1.css>; rel="preload"; as="style",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"',
-            null,
-            $this->createTextApplicationResponse(),
-        );
-    }
-
     public function testInvokingHandlerOnJsonResponseWithoutPreviousHeader(): void
     {
         $this->assertInvokingHandler(
@@ -52,16 +40,6 @@ final class ApplicationResponseHandlerTest extends TestCase
             '<http://localhost:8080/build/file1.js>; rel="preload"; as="script",<http://localhost:8080/build/file2.js>; rel="preload"; as="script",<http://localhost:8080/build/file1.css>; rel="preload"; as="style",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"',
             null,
             new JsonResponse(['status' => 'ok']),
-        );
-    }
-
-    public function testInvokingHandlerOnTextResponseWithPreviousHeaderAndCrossOrigin(): void
-    {
-        $this->assertInvokingHandler(
-            '<http://localhost:8080/static.js>; rel="preload"; as="script",<http://localhost:8080/static.css>; rel="preload"; as="style"',
-            '<http://localhost:8080/static.js>; rel="preload"; as="script",<http://localhost:8080/static.css>; rel="preload"; as="style",<http://localhost:8080/build/file1.js>; rel="preload"; as="script"; crossorigin="anonymous",<http://localhost:8080/build/file2.js>; rel="preload"; as="script"; crossorigin="anonymous",<http://localhost:8080/build/file1.css>; rel="preload"; as="style"; crossorigin="anonymous",<http://localhost:8080/build/file2.css>; rel="preload"; as="style"; crossorigin="anonymous"',
-            'anonymous',
-            $this->createTextApplicationResponse(),
         );
     }
 
@@ -126,17 +104,6 @@ final class ApplicationResponseHandlerTest extends TestCase
         $handler = new ApplicationResponseHandler($response, $tagRenderer, $entrypointCollection, ['_default', 'other_build']);
 
         $handler(Mockery::mock(Application::class), $applicationResponse);
-    }
-
-    private function createTextApplicationResponse(): ApplicationResponse
-    {
-        $template = Mockery::mock(Template::class);
-
-        $template->shouldReceive('render')
-            ->once()
-            ->andReturnUndefined();
-
-        return new TextResponse($template);
     }
 }
 
