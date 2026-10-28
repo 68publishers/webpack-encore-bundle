@@ -35,8 +35,11 @@ jobs:
       - name: Run tests
         run: vendor/bin/tester -C -s ./tests
 
+      # the lowest third-party versions predate PHP 8.4 and 8.5 and trigger deprecations there, the lowest dependencies are tested on the minimal PHP
       - name: Install dependencies (lowest)
+        if: matrix.php-versions == '8.3'
         run: composer update --no-progress --prefer-dist --prefer-lowest --prefer-stable --optimize-autoloader --quiet
 
-      - name: Run tests
+      - name: Run tests (lowest)
+        if: matrix.php-versions == '8.3'
         run: vendor/bin/tester -C -s ./tests
